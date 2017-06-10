@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+ 
+<html>
+<head> 
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.6.0/angular.min.js"></script>
+      <script src="/js/controller.js"></script>
+      <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" />
+       
+</head>
+<body>
+ 
+<div class="container" ng-app="app">
+ 
+     
+     
+    <div ng-controller="postcontroller">
+        <form name="fileNameForm" ng-submit="submitForm()">
+            <label>File Name</label>
+            <input type="text" name="fileName" class="form-control" ng-model="filename"/>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        <p>{{postResultMessage}}</p>
+    </div>
+     
+    <div ng-controller="getcontroller">
+        <button id="btn-id" ng-click="getfunction()">Get Sample Weather</button>
+        
+        <h2> results: </h2>
+        <hr>
+        
+        <ul>
+            <li>{{response.product + " " + response.header + " " + response.zones + " " + response.stationTimestamp + " " + response.forecast + " " + response.dateCreated + " " + response.fileId }}</li> 
+        </ul>
+         
+    </div>
+     
+</div>
+</body>
+</html>

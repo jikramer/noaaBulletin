@@ -4,9 +4,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-import controller.Test;
+import controller.WebController;
 
-@ComponentScan(basePackageClasses = Test.class)
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+@ComponentScan(basePackageClasses = WebController.class)
 
 
 @SpringBootApplication

@@ -10,53 +10,45 @@ use noaabulletin;
 ######
 #tables
 ######
+ 
 
-CREATE TABLE `noaabulletin`.`zone` (
-  `station_id` VARCHAR(50) NOT NULL,
-  `station_location` VARCHAR(100) NULL,
-  `description` VARCHAR(2000) NULL,
-  PRIMARY KEY (`station_id`)
-  );
-
-  CREATE TABLE `weather` (
-  `station_id` varchar(50) NOT NULL,
-  `special_info` varchar(1000) DEFAULT NULL,
-  `station_location` varchar(100) NOT NULL,
+  CREATE TABLE `noaabulletin`.`weatherZone` (
+  `product` varchar(50) NOT NULL,
+  `header` varchar(1000) NOT NULL,
+  `zones` varchar(1000) DEFAULT NULL,	
   `station_timestamp` varchar(50) NOT NULL,
-  `raw_data` text NOT NULL,
+  `forecast` text NOT NULL,
   `date_created` datetime NOT NULL,
-  `file_id` varchar(50) NOT NULL,
-  PRIMARY KEY (`station_id`,`station_location`,`station_timestamp`)
+  `file_id` varchar(50) NOT NULL
+ -- PRIMARY KEY (`product`,`header`,`zone`, `forecast`)
 ) ;
-
 
 ######
 #procs
 ######
 
+ 
 
 USE `noaabulletin`;
-DROP procedure IF EXISTS `spWriteWeatherData`;
+DROP procedure IF EXISTS `spWriteWeatherZoneData`;
 
 DELIMITER $$
 USE `noaabulletin`$$
-CREATE PROCEDURE `spWriteWeatherData` (station_id_in varchar(50), special_info_in varchar(1000), station_location_in varchar(1000), station_timestamp_in varchar(50), raw_data_in text, file_id_in varchar(50) )
+CREATE PROCEDURE `spWriteWeatherZoneData` (product_in varchar(50), header_in varchar(1000),  zones_in varchar(1000), station_timestamp_in varchar(50), forecast_in text, file_id_in varchar(50) )
 BEGIN
 	
-    insert into weather 
-    values (station_id_in, 
-			special_info_in, 
-			station_location_in, 
-			station_timestamp_in,  
-			raw_data_in, 
+    insert into weatherzone 
+    values (product_in, 
+			header_in, 
+            zones_in,
+     		station_timestamp_in,  
+			forecast_in, 
 			now(), 
 			file_id_in); 
-    
-    insert into zone
-    values( station_id_in,
-			station_location_in,
-            '');
+     
     
 END$$
 
 DELIMITER ;
+
+
