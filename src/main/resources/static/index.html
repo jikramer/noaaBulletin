@@ -13,27 +13,49 @@
  
 <div class="container" ng-app="app">
  
-     
+    <div class="page-header">
+    	<h1> NOAA Bulletin Parser </h1>
+    </div>
      
     <div ng-controller="postcontroller">
         <form name="fileNameForm" ng-submit="submitForm()">
+        
             <label>File Name</label>
             <input type="text" name="fileName" class="form-control" ng-model="filename"/>
+            <br>
             <button type="submit" class="btn btn-primary">Submit</button>
+        
         </form>
         <p>{{postResultMessage}}</p>
     </div>
      
+     <hr>
+     
     <div ng-controller="getcontroller">
-        <button id="btn-id" ng-click="getfunction()">Get Sample Weather</button>
         
-        <h2> results: </h2>
-        <hr>
-        
-        <ul>
-            <li>{{response.product + " " + response.header + " " + response.zones + " " + response.stationTimestamp + " " + response.forecast + " " + response.dateCreated + " " + response.fileId }}</li> 
-        </ul>
-         
+        <div class="form-group">
+	  		<label>Filter 1 (Zone)</label>
+	        <input type="text" name="zoneFilter" class= "form-control" ng-model="zoneFilter"/>
+	  	
+	  		<br>
+	    
+	    	<label>Filter 2 (Product)</label>
+	        <input type="text" name="productFilter"  class= "form-control" 	ng-model="productFilter"/>
+	  		
+	  		<br>
+	  		...	
+	  		<br>
+	  		<br>	
+	  		
+	        <button id="btn-id" ng-click="getfunction()">Get Sample Weather</button>
+	        
+	        <h2> <small> Filtered Results: </small></h2>
+	        <hr>
+	        
+	        <ul>
+	            <li>{{response.product + " " + response.header + " " + response.zones + " " + response.stationTimestamp + " " + response.forecast + " " + response.dateCreated + " " + response.fileId }}</li> 
+	        </ul>
+	    </div>     
     </div>
      
 </div>
