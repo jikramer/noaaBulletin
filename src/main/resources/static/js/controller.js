@@ -1,9 +1,8 @@
 var app = angular.module('app', []);
 app.controller('postcontroller', function($scope, $http, $location) {
     $scope.submitForm = function(){
-        //var url = $location.absUrl() + "postfilename";
-		var url =  "/postfilename";
-
+        var url = $location.absUrl() + "postfilename";
+		
         alert(url);
         var config = {
                 headers : {
@@ -12,17 +11,18 @@ app.controller('postcontroller', function($scope, $http, $location) {
         }
         var data = {
             filename: $scope.filename,
+            productType: $scope.productType,
         };
 
-
-        $http.post(url, data, config).then(function (response) {
-
-            $scope.postResultMessage = "Sucessful!";
+        $http.post(url, JSON.stringify(data), config).then(function (response) {
+        	$scope.postResultMessage = "Sucessful!";
+        
         }, function (response) {
             $scope.postResultMessage = "Fail!";
         });
 
         $scope.filename = "";
+        $scope.productType = "";
     }
 });
 
@@ -30,7 +30,7 @@ app.controller('getcontroller', function($scope, $http, $location) {
     $scope.getfunction = function(){
         var url = $location.absUrl() + "getallweather";
 		
-		 alert($location.absUrl());
+		 alert(url);
          var config = {
                 headers : {
                     'Content-Type': 'application/json;charset=utf-8;'

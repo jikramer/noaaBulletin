@@ -29,8 +29,11 @@ public class WeatherZoneHandler {
 	String line = EMPTY_STRING;
 	String currentProduct = EMPTY_STRING;
 	String currentHeader = EMPTY_STRING;
+	String productType = EMPTY_STRING;
 	
-  	public void doWeatherZoneDataLoad(){
+	
+  	public void doWeatherZoneDataLoad(String productType){
+  		this.productType = productType.toUpperCase();
 		HashMap<String, ArrayList<WeatherZone>> weatherZoneData = doDataRead();
 		WeatherZoneDao weatherZoneDao = new WeatherZoneDao();
 		weatherZoneDao.writeWeatherZoneData(weatherZoneData);
@@ -52,7 +55,6 @@ public class WeatherZoneHandler {
 
 	private ArrayList<WeatherZone> parseFile(File file){
 		
-
 		ArrayList<WeatherZone> weatherZoneList = new ArrayList<WeatherZone>();
 		StringBuilder rawDataBuffer = new StringBuilder();
 		
@@ -92,13 +94,12 @@ public class WeatherZoneHandler {
 	}
 
 	
- 	
  	private void initializeBufferedReader(){
  		
 	    	try {
 				line = br.readLine();
 				
-		 		while(!line.contains("KOKX")){
+		 		while(!line.contains(productType)){
 		 			line = br.readLine();
 		 		}	
 			} catch (IOException e) { 
@@ -115,11 +116,11 @@ public class WeatherZoneHandler {
 	 			line = br.readLine();
                 	 		
 	 		
-	 		if ( line.contains("KOKX")){ // pass this in...  will specify new product
+	 		if ( line.contains(productType)){ 
 	 			hasProduct = true;
 	 			System.out.println("product updated to... : " + line);
 		    	currentProduct = line;
-	 			weatherZone.setProduct(currentProduct);
+	 			weatherZone.setProductType(currentProduct);
 		    	
 		    	//since we have a product get the header
 		    	StringBuilder headerBuff = new StringBuilder();
@@ -146,8 +147,8 @@ public class WeatherZoneHandler {
 		    	weatherZone.setHeader(currentHeader);	
 	    	} 
 	 	 	
-	 		if(weatherZone.getProduct() == null)
-	 			weatherZone.setProduct(currentProduct);
+	 		if(weatherZone.getProductType() == null)
+	 			weatherZone.setProductType(currentProduct);
 	 		
 	 		if(weatherZone.getHeader() == null)
 	 			weatherZone.setHeader(currentHeader);
@@ -245,7 +246,7 @@ public class WeatherZoneHandler {
 	 */
 	public static void main(String args[]){
 		WeatherZoneHandler weatherZoneHandler = new WeatherZoneHandler();
-		weatherZoneHandler.doWeatherZoneDataLoad();
+		weatherZoneHandler.doWeatherZoneDataLoad("KOKX");
 		
 	}
 

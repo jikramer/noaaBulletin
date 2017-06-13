@@ -26,7 +26,7 @@ public class WeatherZoneDao {
 					String sql = "{call spWriteWeatherZoneData(?,?,?,?,?,?) }";
 					CallableStatement cs = conn.prepareCall(sql);
 
-					cs.setString(1, weatherZone.getProduct());
+					cs.setString(1, weatherZone.getProductType());
 					cs.setString(2, weatherZone.getHeader());
  					cs.setString(3, weatherZone.getZones());
 					cs.setString(4, weatherZone.getStationTimestamp());
@@ -54,13 +54,13 @@ public class WeatherZoneDao {
 
 			while (rs.next()) {
 				WeatherZone weatherZone = new WeatherZone();
-				weatherZone.setProduct(rs.getString("product"));
+				weatherZone.setProductType(rs.getString("product"));
 				weatherZone.setHeader(rs.getString("header"));
 				weatherZone.setZones(rs.getString("zones"));
 				weatherZone.setStationTimestamp(rs.getString("station_timestamp"));
 				weatherZone.setForecast(rs.getString("forecast"));
 				weatherZone.setDateCreated(rs.getDate("date_created"));
-				weatherZone.setFileId(rs.getString("file_id"));
+				weatherZone.setFilename(rs.getString("file_id"));
 
 				weatherZoneList.add(weatherZone);
 			}

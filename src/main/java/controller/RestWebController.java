@@ -1,6 +1,7 @@
 package controller;
 
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,11 +35,16 @@ public class RestWebController {
     	return jsonWeather;
     }
      
-    @RequestMapping(value="/postfilename", method=RequestMethod.POST)
-    public void postCustomer(@RequestBody String filename){
+    @RequestMapping(value="/postfilename", method=RequestMethod.POST )	
+    public void postCustomer(@RequestBody String param){
     	WeatherZoneHandler handler = new WeatherZoneHandler();
-    	handler.doWeatherZoneDataLoad();
+    	System.out.println("incoming: " + param);
+    	Gson gson = new Gson();
+    	    	
+    	WeatherZone weatherZone = gson.fromJson(param, WeatherZone.class);
+    	
+     	handler.doWeatherZoneDataLoad(weatherZone.getProductType());
 
-        return;
+        
     }
 }

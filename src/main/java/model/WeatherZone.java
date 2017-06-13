@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class WeatherZone {
 	
-	private String product;
+	private String productType;
 	private String header;
 	private String zoneCodes;
 	private String zones;
@@ -13,13 +13,13 @@ public class WeatherZone {
 	private String stationLocation;
 	private String forecast;
 	private Date dateCreated;
-	private String fileId;
+	private String filename;
 	
-	public String getProduct() {
-		return product;
+	public String getProductType() {
+		return productType;
 	}
-	public void setProduct(String product) {
-		this.product = product;
+	public void setProductType(String product) {
+		this.productType = product;
 	}
 	public String getHeader() {
 		return header;
@@ -66,14 +66,14 @@ public class WeatherZone {
 	/**
 	 * @return the fileId
 	 */
-	public String getFileId() {
-		return fileId;
+	public String getFilename() {
+		return filename;
 	}
 	/**
 	 * @param fileId the fileId to set
 	 */
-	public void setFileId(String fileId) {
-		this.fileId = fileId;
+	public void setFilename(String fileId) {
+		this.filename = fileId;
 	}
 	/**
 	 * @return the zone_codes
