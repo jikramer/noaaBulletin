@@ -1,7 +1,6 @@
 package controller;
 
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +43,7 @@ public class RestWebController {
     	WeatherZone weatherZone = gson.fromJson(param, WeatherZone.class);
     	
      	handler.doWeatherZoneDataLoad(weatherZone.getProductType());
-
+     	
         
     }
 }

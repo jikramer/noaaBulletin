@@ -19,17 +19,17 @@
      
     <p class = "bg-info"> post	 test </p>
     <div ng-controller="postcontroller">
-        <form name="fileNameForm" ng-submit="submitForm()">
+        <form name="fileNameForm" ng-submit="submitForm(post)">
         	<div class = "row">
 	        	<div class = "col-sm-3">
 	            	<label>File Name</label>
-	            	<input type="text" name="fileName" class="form-control" ng-model="filename"/>
+	            	<input type="text" name="fileName" class="form-control" ng-model="post.filename"/>
 	            </div>
 	     	</div>
 	        <div class = "row">
                 <div class = "col-sm-3">
 	            	<label>Produt Type</label>
-	            	<input type="text" name="productType" class="form-control" ng-model="productType"/>
+	            	<input type="text" name="productType" class="form-control" ng-model="post.productType"/>
 	            </div>
 	        </div>
 			<br>	 
@@ -39,7 +39,7 @@
 	        	</div>	
         	</div>
         </form>
-        <p>{{postResultMessage}}</p>
+        <p><span ng-class="messageClass()">{{xmessage()}}</span></p>
     </div>
     <hr>
    

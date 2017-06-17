@@ -1,28 +1,37 @@
 var app = angular.module('app', []);
+
 app.controller('postcontroller', function($scope, $http, $location) {
-    $scope.submitForm = function(){
+	var messageClassName = "hide";
+	var screenMessage = "";
+	
+	$scope.messageClass = function(){
+    	return messageClassName;
+    }
+	
+	
+	$scope.xmessage = function(){
+    	return screenMessage;
+    }	
+    
+	
+	$scope.submitForm = function(post){
         var url = $location.absUrl() + "postfilename";
 		
-        alert(url);
         var config = {
                 headers : {
                     'Content-Type': 'application/json;charset=utf-8;'
                 }
         }
-        var data = {
-            filename: $scope.filename,
-            productType: $scope.productType,
-        };
-
-        $http.post(url, JSON.stringify(data), config).then(function (response) {
-        	$scope.postResultMessage = "Sucessful!";
+   
+        $http.post(url, post, config).then(function (response) {
+        	screenMessage = "Sucessful!";
+        	messageClassName = "label label-success";
         
         }, function (response) {
-            $scope.postResultMessage = "Fail!";
+        	screenMessage = "Fail!";
+        	messageClassName = "label label-danger";
         });
 
-        $scope.filename = "";
-        $scope.productType = "";
     }
 });
 

@@ -87,5 +87,51 @@ public class WeatherZone {
 	public void setZoneCodes(String zoneCodes) {
 		this.zoneCodes = zoneCodes;
 	}
-	
+
+	public String toString(){
+		StringBuilder buff = new StringBuilder();
+		buff.append("productType: " );
+		buff.append(productType );
+		buff.append("\n");
+		
+		buff.append("header: " );
+		buff.append(header);
+		buff.append("\n");
+		
+		buff.append("zoneCodes: " );
+		buff.append(zoneCodes);
+		buff.append("\n");
+		
+		buff.append("zones: " );
+		buff.append(zones);
+		buff.append("\n");
+		
+		buff.append("specialInfo: " );
+		buff.append(specialInfo);
+		buff.append("\n");
+		
+		buff.append("stationTimestamp: " );
+		buff.append(stationTimestamp);
+		buff.append("\n");
+		
+		buff.append("stationLocation: " );
+		buff.append(stationLocation);
+		buff.append("\n");
+		
+
+		buff.append("forecast: " );
+		buff.append(forecast);
+		buff.append("\n");
+		
+		buff.append("dateCreated: " );
+		buff.append(dateCreated);
+		buff.append("\n");
+		
+		buff.append("filename: " );
+		buff.append(filename);
+		buff.append("\n");
+		
+		return buff.toString();
+	}
 }
+ 
