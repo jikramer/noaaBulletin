@@ -72,6 +72,44 @@ public class WeatherZoneDao {
 		return weatherZoneList;
 	}
 
+	public List<WeatherZone> getFilteredData(String productType, String zones, String keywords) {
+		Connection conn = DBUtils.getConnection();
+		List<WeatherZone> weatherZoneList = new ArrayList<WeatherZone>();
+
+		if ( keywords == null)
+			keywords = "";
+		
+		try {
+			String query = "select * from weatherZone " 
+					+ " where product like '%" + productType + "%'" 
+					+ " and zones like '%" + zones + "%'"
+					+ " and forecast like '%" + keywords + "%'";
+					
+
+			Statement st = conn.createStatement();
+			ResultSet rs = st.executeQuery(query);
+
+			while (rs.next())  {
+				WeatherZone weatherZone = new WeatherZone();
+				weatherZone.setProductType(rs.getString("product"));
+				weatherZone.setHeader(rs.getString("header"));
+				weatherZone.setZones(rs.getString("zones"));
+				weatherZone.setStationTimestamp(rs.getString("station_timestamp"));
+				weatherZone.setForecast(rs.getString("forecast"));
+				weatherZone.setDateCreated(rs.getDate("date_created"));
+				weatherZone.setFilename(rs.getString("file_id"));
+
+				weatherZoneList.add(weatherZone);
+			}
+			st.close();
+		} catch (Exception e) {
+			System.err.println("exception retreiving sample data... ");
+			System.err.println(e.getMessage());
+		}
+		return weatherZoneList;
+	}
+
+	
 	public void test() {
 		Connection conn = DBUtils.getConnection();
 

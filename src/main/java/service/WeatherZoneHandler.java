@@ -107,9 +107,10 @@ public class WeatherZoneHandler {
 		WeatherZone weatherZone = new WeatherZone();
 
 		try {
-			if (line.equals(EMPTY_STRING))
-				line = br.readLine();
 
+			while (( !isZoneCode(line) &&  !line.contains(productType)) ||line.equals(EMPTY_STRING) )
+				line = br.readLine();
+ 
 			if (line.contains(productType)) {
 				hasProduct = true;
 				System.out.println("product updated to... : " + line);
@@ -148,8 +149,10 @@ public class WeatherZoneHandler {
 				weatherZone.setHeader(currentHeader);
 
 			// get the zones, omit the zone codes
-			if (hasProduct)
+			if (hasProduct){
+				
 				line = br.readLine();
+			}
 			skipZoneCodes();
 
 			// get the text zones
@@ -157,15 +160,17 @@ public class WeatherZoneHandler {
 			zoneBuff.append(line);
 			zoneBuff.append(SPACE_PIPE_SPACE);
 
-			if (zoneBuff.toString().contains("PUBLIC INFORMATION") || zoneBuff.toString().contains("SPOTTER")
-					|| weatherZone.getHeader().contains("PUBLIC INFORMATION")
-					|| weatherZone.getHeader().contains("SPOTTER")) {
-				zoneBuff = new StringBuilder();
-				zoneBuff.append(weatherZone.getZoneCodes());
-			}
 
 			while (true) {
+
 				line = br.readLine();
+				
+				if (line.contains("PUBLIC INFORMATION") || line.contains("SPOTTER")
+						|| weatherZone.getHeader().contains("PUBLIC INFORMATION")
+						|| weatherZone.getHeader().contains("SPOTTER")) {
+				return weatherZone;
+				}			
+				
 				System.out.println("line: " + line);
 				if (line.length() >= 3 && line.substring(0, 3).matches("[0-9]{3}")) {
 					weatherZone.setStationTimestamp(line);
@@ -177,15 +182,9 @@ public class WeatherZoneHandler {
 				zoneBuff.append(SPACE_PIPE_SPACE);
 			}
 
-			if (zoneBuff.toString().contains("PUBLIC INFORMATION") || zoneBuff.toString().contains("SPOTTER")
-					|| weatherZone.getHeader().contains("PUBLIC INFORMATION")
-					|| weatherZone.getHeader().contains("SPOTTER")) {
-				weatherZone.setZones(weatherZone.getZoneCodes());
-			} else {
-				weatherZone.setZones(zoneBuff.toString());
-				System.out.println("zones: " + zoneBuff.toString());
-			}
-
+			weatherZone.setZones(zoneBuff.toString());
+			System.out.println("zones: " + zoneBuff.toString());
+ 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 
 import model.WeatherZone;
 import service.WeatherZoneHandler;
+import service.WeatherZoneOutputBuilder;
 
 
 
@@ -35,7 +36,7 @@ public class RestWebController {
     }
      
     @RequestMapping(value="/postfilename", method=RequestMethod.POST )	
-    public void postCustomer(@RequestBody String param){
+    public void postSampleRequest(@RequestBody String param){
     	WeatherZoneHandler handler = new WeatherZoneHandler();
     	System.out.println("incoming: " + param);
     	Gson gson = new Gson();
@@ -43,7 +44,19 @@ public class RestWebController {
     	WeatherZone weatherZone = gson.fromJson(param, WeatherZone.class);
     	
      	handler.doWeatherZoneDataLoad(weatherZone.getProductType());
-     	
         
     }
+    
+    @RequestMapping(value="/buildoutputfile", method=RequestMethod.POST)	
+    public void buildoutputfile(@RequestBody String param){
+    	WeatherZoneOutputBuilder builder = new WeatherZoneOutputBuilder();
+    	
+    	System.out.println("incoming: " + param);
+    	Gson gson = new Gson();
+    	    	
+    	WeatherZone weatherZone = gson.fromJson(param, WeatherZone.class);
+    	builder.buildOutputFile(weatherZone.getProductType(), weatherZone.getZones(), weatherZone.getKeywords());
+        
+    }
+    
 }

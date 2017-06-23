@@ -14,6 +14,7 @@ public class WeatherZone {
 	private String forecast;
 	private Date dateCreated;
 	private String filename;
+	private String keywords;
 	
 	public String getProductType() {
 		return productType;
@@ -132,6 +133,18 @@ public class WeatherZone {
 		buff.append("\n");
 		
 		return buff.toString();
+	}
+	/**
+	 * @return the keywords
+	 */
+	public String getKeywords() {
+		return keywords;
+	}
+	/**
+	 * @param keywords the keywords to set
+	 */
+	public void setKeywords(String keywords) {
+		this.keywords = keywords;
 	}
 }
  

@@ -7,78 +7,131 @@
       <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.6.0/angular.min.js"></script>
       <script src="/js/controller.js"></script>
       <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" />
+
+
        
 </head>
 <body>
- 
-<div class="container" ng-app="app">
- 
-    <div class="page-header">
-    	<h1> NOAA Bulletin Parser </h1>
-    </div>
-     
-    <p class = "bg-info"> post	 test </p>
-    <div ng-controller="postcontroller">
-        <form name="fileNameForm" ng-submit="submitForm(post)">
-        	<div class = "row">
-	        	<div class = "col-sm-3">
-	            	<label>File Name</label>
-	            	<input type="text" name="fileName" class="form-control" ng-model="post.filename"/>
-	            </div>
-	     	</div>
-	        <div class = "row">
-                <div class = "col-sm-3">
-	            	<label>Produt Type</label>
-	            	<input type="text" name="productType" class="form-control" ng-model="post.productType"/>
-	            </div>
-	        </div>
-			<br>	 
-	 		<div class = "row">
-	 			 <div class = "col-sm-3">	
-	            	<button type="submit" class="btn btn-primary">Submit</button>
-	        	</div>	
-        	</div>
-        </form>
-        <p><span ng-class="messageClass()">{{xmessage()}}</span></p>
-    </div>
-    <hr>
-   
-    <p class = "bg-primary"> get	 test </p> 
-    <div ng-controller="getcontroller">
-        
-    	<div class = "row">
-			<div class = "col-sm-3">	
+
+	<script>
 	
-        		<div class="form-group">
-	  				<label>Filter 1 (Zone)</label>
-	        		<input type="text" name="zoneFilter" class= "form-control" ng-model="zoneFilter"/>
-	  			</div>	
-	    	</div>
+	  	function showPost() {
+		    document.getElementById('doGet').style.display = "none";
+		    document.getElementById('doPost').style.display = "block";
+		};
+		function showGet() {
+		    document.getElementById('doGet').style.display = "block";
+		    document.getElementById('doPost').style.display = "none";
+		};
+	
+		function showSample() {
+		    document.getElementById('doSample').style.display = "block";
+		    document.getElementById('doBuild').style.display = "none";
+		};
+	
+		function showBuild() {
+		    document.getElementById('doBuild').style.display = "block";
+		    document.getElementById('doSample').style.display = "none";
+		};
+	
+	
+	</script>
+
+
+	<div class="container" ng-app="app">
+	 
+	    <div class="page-header">
+	    	<h1> NOAA Bulletin Parser </h1>
+
+			<div id="chooseType" style="display: block;">
+	 			 <input type="radio"  name="data" onclick="showPost()" id="poster"> Parse file
+				&nbsp;	
+				 <input type="radio"  name="data" onclick="showGet()" id="getter"> Build report 
+	 		</div>
 	    </div>
-	    <div class = "row">
-			<div class = "col-sm-3">	
-	
-		    	<label>Filter 2 (Product)</label>
-		        <input type="text" name="productFilter"  class= "form-control" 	ng-model="productFilter"/>
-			  		
-	  		</div>
-	  	</div>
-		<br>
-	    <div class = "row">
-			<div class = "col-sm-3">	
-	
-	    		<button id="btn-id" ng-click="getfunction()">Get Sample Weather</button>
-	        </div>
-	    </div>
-	
-	    <h2> <small> Filtered Results: </small></h2>
-		<hr>
-	        
-	        <ul>
-	            <li>{{response.product + " " + response.header + " " + response.zones + " " + response.stationTimestamp + " " + response.forecast + " " + response.dateCreated + " " + response.fileId }}</li> 
-	        </ul>
-	    </div>     
-     
-	</div>
-</body>
+
+		 
+	     
+	    <div id ="doPost" style="display: none;">
+		    <div ng-controller="postcontroller">
+		        <form name="fileNameForm" ng-submit="submitForm(post)">
+		        	<div class = "row">
+			        	<div class = "col-sm-4">
+			            	<label>File Name</label>
+			            	<input type="text" name="fileName" class="form-control" ng-model="post.filename"/>
+			            </div>
+			             <div class = "col-sm-4">
+			            	<label>Produt Type</label>
+			            	<input type="text" name="productType" class="form-control" ng-model="post.productType"/>
+			            </div>
+			        </div>
+					<br>	 
+			 		<div class = "row">
+			 			 <div class = "col-sm-3">	
+			            	<button type="submit" class="btn btn-primary">Submit</button>
+			        	</div>	
+		        	</div>
+		        </form>
+		        <p><span ng-class="messageClass()">{{xmessage()}}</span></p>
+		    </div>
+		    </div>
+	    
+	   	<div id = "doGet" style="display: none;">
+		    <div ng-controller="getcontroller">
+		        <form name="xbuildForm" ng-submit="submitForm(post)">
+			    	<div class = "row">
+						<div class = "col-sm-4">	
+				
+					    	<label>Product</label>
+					        <input type="text" name="productType"  class= "form-control" 	ng-model="post.productType"/>
+						  		
+				  		</div>
+						<div class = "col-sm-4">	
+				
+			        		<div class="form-group">
+				  				<label>Zone(s) (comma delimited)</label>
+				        		<input type="text" name="zones" class= "form-control" ng-model="post.zones"/>
+				  			</div>	
+				    	</div>
+		 		
+		 				<div class = "col-sm-4">	
+				
+					    	<label>Keywords (comma delimited)</label>
+					        <input type="text" name="keywords"  class= "form-control" 	ng-model="post.keywords"/>
+						  		
+				  		</div>
+		
+				  	</div>
+					<br>
+				    <div class = "row">
+						<div class = "col-sm-3">	
+				     		<button id="btn-id" ng-click="buildfunction()" class="btn btn-primary" onClick="showBuild();">Build Output File</button>
+				        </div>
+						<div class = "col-sm-3">	
+				     		<button id="btn-id" ng-click="getfunction()" class="btn btn-default" onClick="showSample();">View Sample</button>
+				        </div>
+						<div class = "col-sm-3">	
+				     		&nbsp;
+				        </div>
+				
+				    </div>
+				</form>			
+			    <div id = "doBuild" style="display: none;">
+			    	<hr>
+			        <h2> <small> {{label()}} </small></h2>
+			   		<p><span ng-class="messageClass()">{{xmessage()}}</span></p>
+				</div>
+				
+				<div id = "doSample" style="display: none;">
+				    <h2> <small> {{label()}} </small></h2>
+					<hr>
+				        <ul>
+				            <li>{{response.product + " " + response.header + " " + response.zones + " " + response.stationTimestamp + " " + response.forecast + " " + response.dateCreated + " " + response.fileId }}</li> 
+				        </ul>
+				    </div>     
+				    </div>
+		     
+			</div>
+		</div>
+	</body>
 </html>

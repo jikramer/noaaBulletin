@@ -8,12 +8,10 @@ app.controller('postcontroller', function($scope, $http, $location) {
     	return messageClassName;
     }
 	
-	
 	$scope.xmessage = function(){
     	return screenMessage;
     }	
     
-	
 	$scope.submitForm = function(post){
         var url = $location.absUrl() + "postfilename";
 		
@@ -36,7 +34,18 @@ app.controller('postcontroller', function($scope, $http, $location) {
 });
 
 app.controller('getcontroller', function($scope, $http, $location) {
-    $scope.getfunction = function(){
+	var messageClassName = "hide";
+	var screenMessage = "";
+
+	$scope.messageClass = function(){
+    	return messageClassName;
+    }
+	
+	$scope.xmessage = function(){
+    	return screenMessage;
+    }	
+	
+	$scope.getfunction = function(){
         var url = $location.absUrl() + "getallweather";
 		
 		 alert(url);
@@ -46,11 +55,44 @@ app.controller('getcontroller', function($scope, $http, $location) {
                 }
         }
 
+      	$scope.label = function(){
+         	return "Filtered Results:";
+         }	
+         
+
         $http.get(url, config).then(function (response) {
-	        $scope.response = response.data
+        	$scope.response = response.data
  
         }, function (response) {
             $scope.getResultMessage = "Fail!";
         });
     }
+	
+	$scope.submitForm = function(post){
+        var url = $location.absUrl() + "buildoutputfile";
+         
+		 alert(url);
+		 alert(post);
+         
+		 var config = {
+                headers : {
+                    'Content-Type': 'application/json;charset=utf-8;'
+                }
+        }
+
+      	$scope.filteredLabel = function(){
+         	return "Results:";
+         }	
+         
+        $http.post(url, post, config).then(function (response) {
+        	screenMessage = "Sucessful!";
+        	messageClassName = "label label-success";
+        
+        }, function (response) {
+        	screenMessage = "Fail!";
+        	messageClassName = "label label-danger";
+        });
+
+    }
+
 });
