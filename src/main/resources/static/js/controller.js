@@ -1,3 +1,6 @@
+
+
+
 var app = angular.module('app', []);
 
 app.controller('postcontroller', function($scope, $http, $location) {
@@ -46,20 +49,18 @@ app.controller('getcontroller', function($scope, $http, $location) {
     }	
 	
 	$scope.getfunction = function(){
-        var url = $location.absUrl() + "getallweather";
+        var url = $location.absUrl() + "getsampleweather";
 		
-		 alert(url);
-         var config = {
+		var config = {
                 headers : {
                     'Content-Type': 'application/json;charset=utf-8;'
                 }
         }
 
       	$scope.label = function(){
-         	return "Filtered Results:";
+         	return "Sample Result Set:";
          }	
          
-
         $http.get(url, config).then(function (response) {
         	$scope.response = response.data
  
@@ -71,10 +72,7 @@ app.controller('getcontroller', function($scope, $http, $location) {
 	$scope.submitForm = function(post){
         var url = $location.absUrl() + "buildoutputfile";
          
-		 alert(url);
-		 alert(post);
-         
-		 var config = {
+		var config = {
                 headers : {
                     'Content-Type': 'application/json;charset=utf-8;'
                 }

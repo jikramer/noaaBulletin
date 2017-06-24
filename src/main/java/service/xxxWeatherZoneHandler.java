@@ -12,7 +12,7 @@ import dbo.WeatherZoneDao;
 import model.WeatherZone;
 import utils.FileUtil;
 
-public class WeatherZoneHandler {
+public class xxxWeatherZoneHandler {
 
 	public static final String EMPTY_STRING = "";
 	public static final String SPACE = " ";
@@ -30,12 +30,16 @@ public class WeatherZoneHandler {
 	String currentHeader = EMPTY_STRING;
 	String productType = EMPTY_STRING;
 
+	//ow
+	boolean haveZoneCodes = false;
+	boolean foundFirstDate = false;
+	boolean foundSecondDate = false;
 	boolean isUnofficial = false;
 	String timeStampFromUnofficial = "";
-	boolean haveZoneCodes = false;
+	
 	
 	public void doWeatherZoneDataLoad(String productType) {
-		this.productType = productType.toUpperCase();
+		this.productType = SPACE + productType.toUpperCase() + SPACE;	// avoid embedded KOKX
 		HashMap<String, ArrayList<WeatherZone>> weatherZoneData = doDataRead();
 		WeatherZoneDao weatherZoneDao = new WeatherZoneDao();
 		weatherZoneDao.writeWeatherZoneData(weatherZoneData);
@@ -77,6 +81,9 @@ public class WeatherZoneHandler {
 				line = br.readLine();
 				while (!line.contains(END_OF_SECTION_DELIMITER)) {
 					System.out.println("forecast line: " + line);
+					if(line.length() >= 3 && line.substring(0, 3).matches("[0-9]{3}") && !line.contains("PERCENT")){
+						System.out.println("ugh");
+					}
 					rawDataBuffer.append(line);
 					rawDataBuffer.append(NEW_LINE_CHAR);
 					line = br.readLine();
@@ -106,44 +113,89 @@ public class WeatherZoneHandler {
 		}
 	}
 
-	private WeatherZone processHeader() {
-		boolean hasProduct = false;
-		WeatherZone weatherZone = new WeatherZone();
+	private WeatherZone handleHasProductType(WeatherZone weatherZone){
+		try{
+			System.out.println("product updated to... : " + line);
+			currentProduct = line;
+			weatherZone.setProductType(currentProduct);
 
-		try {
+			// since we have a product get the header
+			StringBuilder headerBuff = new StringBuilder();
+			line = br.readLine();
+			headerBuff.append(line);
+			headerBuff.append(SPACE_PIPE_SPACE);
 
-			while (( !isZoneCode(line) &&  !line.contains(productType)) ||line.equals(EMPTY_STRING) )
+			//i think the pattern is date1 - zonecode - zone - date2 - forecast
+			StringBuilder zoneBuff = new StringBuilder();
+			
+			
+			while (true) {
 				line = br.readLine();
- 
-			if (line.contains(productType)) {
-				hasProduct = true;
-				System.out.println("product updated to... : " + line);
-				currentProduct = line;
-				weatherZone.setProductType(currentProduct);
-
-				// since we have a product get the header
-				StringBuilder headerBuff = new StringBuilder();
-				line = br.readLine();
-				headerBuff.append(line);
-				headerBuff.append(SPACE_PIPE_SPACE);
-
-				while (true) {
-					line = br.readLine();
-					if (line.startsWith(TRIPLE_DOT))
-						break;
-
-					if (line.length() >= 3 && line.substring(0, 3).matches("[0-9]{3}")) {
-						weatherZone.setStationTimestamp(line);
-						System.out.println("station timestamp: " + line);
-						break;
+ 				
+				if (line.length() >= 3 && line.substring(0, 3).matches("[0-9]{3}") && foundFirstDate == false) {
+					foundFirstDate = true;
+					weatherZone.setStationTimestamp(line);
+		 
+					System.out.println("station timestamp: " + line);
+					
+					String zoneCodes = loadZoneCodes();
+					if(zoneCodes.length() > 0){
+						//note - setZoneCodes advances the br
+						weatherZone.setZoneCodes(zoneCodes);
+				
+						
+						haveZoneCodes = true;
+						if (isUnofficial){
+							System.out.println("timestamp from unofficial: " + timeStampFromUnofficial);
+							weatherZone.setStationTimestamp(timeStampFromUnofficial);
+							timeStampFromUnofficial = "";
+							break;
+						}
 					}
+				}
+
+				//get 2nd date -
+				if (line.length() >= 3 && line.substring(0, 3).matches("[0-9]{3}") && foundFirstDate == true) {
+					foundSecondDate = true;
+					weatherZone.setZones(zoneBuff.toString());
+					break;
+				}
+
+				else if(foundFirstDate == true)
+					zoneBuff.append(line);
+
+ 				else{
 					headerBuff.append(line);
 					headerBuff.append(SPACE_PIPE_SPACE);
 				}
-				currentHeader = headerBuff.toString();
-				System.out.println("Header updated to...: " + currentHeader);
-				weatherZone.setHeader(currentHeader);
 			}
+			currentHeader = headerBuff.toString();
+			System.out.println("Header updated to...: " + currentHeader);
+			weatherZone.setHeader(currentHeader);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		if(weatherZone.getStationTimestamp() == null)
+			System.out.println("what the F");
+		return weatherZone;
+	}
+	
+
+	private WeatherZone processHeader() {
+		boolean hasProduct = false;
+		WeatherZone weatherZone = new WeatherZone();
+		try {
+			while (( !isZoneCode(line) &&  !line.contains(productType)) ||line.equals(EMPTY_STRING) )
+				line = br.readLine();
+	
+			System.out.println("line: " + line);
+ 			
+			if (line.contains(productType)) {
+				hasProduct = true;
+				weatherZone = handleHasProductType(weatherZone);
+			}
+ 			if (line.equals(EMPTY_STRING))
+				line = br.readLine();
 
 			if (weatherZone.getProductType() == null)
 				weatherZone.setProductType(currentProduct);
@@ -151,72 +203,71 @@ public class WeatherZoneHandler {
 			if (weatherZone.getHeader() == null)
 				weatherZone.setHeader(currentHeader);
 
-			// get the zones, omit the zone codes
-			if (hasProduct){
+			// get the zones and load the zone codes
+			if (hasProduct)
 				line = br.readLine();
-			}
-			//skipZoneCodes();
 
-			String zoneCodes = loadZoneCodes();
-			if(zoneCodes.length() > 0){
-				//note - setZoneCodes advances the br
+			
+			if(!haveZoneCodes){
+				String zoneCodes = loadZoneCodes();
 				weatherZone.setZoneCodes(zoneCodes);
-		  		haveZoneCodes = true;
-				if (isUnofficial){
+				if(isUnofficial){
 					System.out.println("timestamp from unofficial: " + timeStampFromUnofficial);
 					weatherZone.setStationTimestamp(timeStampFromUnofficial);
 					timeStampFromUnofficial = "";
-				//	break;
+					return weatherZone;
 				}
 			}
 			
 			// get the text zones
-			StringBuilder zoneBuff = new StringBuilder();
-			zoneBuff.append(line);
-			zoneBuff.append(SPACE_PIPE_SPACE);
-
-
-			while (true) {
-
-				line = br.readLine();
-				
-				if (line.contains("PUBLIC INFORMATION") || line.contains("SPOTTER")
-						|| weatherZone.getHeader().contains("PUBLIC INFORMATION")
-						|| weatherZone.getHeader().contains("SPOTTER")) {
-				return weatherZone;
-				}			
-				
-				System.out.println("line: " + line);
-				if (line.length() >= 3 && line.substring(0, 3).matches("[0-9]{3}")) {
-					weatherZone.setStationTimestamp(line);
-					System.out.println("station timestamp: " + line);
-					break;
-				}
-
+			if(!foundSecondDate){
+				StringBuilder zoneBuff = new StringBuilder();
 				zoneBuff.append(line);
 				zoneBuff.append(SPACE_PIPE_SPACE);
+			
+				 
+				
+				while (true) {
+					line = br.readLine();
+					System.out.println("line: " + line);
+					if (line.length() >= 3 && line.substring(0, 3).matches("[0-9]{3}")) {
+						weatherZone.setStationTimestamp(line);
+						System.out.println("station timestamp: " + line);
+  						break;
+					}
+	
+					zoneBuff.append(line);
+					zoneBuff.append(SPACE_PIPE_SPACE);
+				}
+				weatherZone.setZones(zoneBuff.toString());
 			}
 
-			weatherZone.setZones(zoneBuff.toString());
-			System.out.println("zones: " + zoneBuff.toString());
- 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		System.out.println(weatherZone.toString());	
+		haveZoneCodes = false;
+		foundFirstDate = false;
+		foundSecondDate = false;
+
+		if(weatherZone.getStationTimestamp() == null)
+			System.out.println("what the F");
+		
 		return weatherZone;
 	}
 
-	public void skipZoneCodes() {
-		try {
-			line = br.readLine();
-			if (isZoneCode(line)) {
-				System.out.println("zone code: " + line);
-				skipZoneCodes();
+	private void doUnofficialObservations(){
+		while (!line.contains("***"))
+			try{
+				line = br.readLine();
+				if(line.length() >= 3 && line.substring(0, 3).matches("[0-9]{3}"))
+					timeStampFromUnofficial = line;
+						
+				System.out.println("what the UNOFFICIAL: " + line);
+			}catch (IOException e) {
+				e.printStackTrace();
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		isUnofficial = true;
 	}
 	
 	public String loadZoneCodes() {
@@ -244,42 +295,24 @@ public class WeatherZoneHandler {
 	}
 	
 
-	private boolean isZoneCodeContinuation(String s) {
-		String n = ".*[0-9].*";
-		boolean a = s.endsWith("-");
-		return s.matches(n) && a;
-	}
-	private void doUnofficialObservations(){
-		while (!line.contains("***"))
-			try{
-				line = br.readLine();
-				if(line.length() >= 3 && line.substring(0, 3).matches("[0-9]{3}"))
-					timeStampFromUnofficial = line;
-						
-				System.out.println("what the UNOFFICIAL: " + line);
-			}catch (IOException e) {
-				e.printStackTrace();
-			}
-		isUnofficial = true;
-	}
-
-
-
-
 	private boolean isZoneCode(String s) {
 		String n = ".*[0-9].*";
 		String a = ".*[A-Z].*";
 		return s.matches(n) && s.matches(a);
 	}
 
+
+	private boolean isZoneCodeContinuation(String s) {
+		String n = ".*[0-9].*";
+		boolean a = s.endsWith("-");
+		return s.matches(n) && a;
+	}
+
 	private boolean processEmptyLineForEOF() {
 		if (line.equals(EMPTY_STRING)) {
 			try {
 				line = br.readLine();
-				if (line == null || line.equals(EMPTY_STRING)) { // 2 empty
-																	// lines in
-																	// a row
-																	// done
+				if (line == null || line.equals(EMPTY_STRING)) { 
 					System.out.println("2 empty lines in a row i think we're done");
 					return true;
 				}
@@ -307,5 +340,4 @@ public class WeatherZoneHandler {
 		weatherZoneHandler.doWeatherZoneDataLoad("KOKX");
 
 	}
-
 }

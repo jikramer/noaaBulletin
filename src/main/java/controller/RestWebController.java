@@ -15,34 +15,30 @@ import model.WeatherZone;
 import service.WeatherZoneHandler;
 import service.WeatherZoneOutputBuilder;
 
-
-
 @RestController
 public class RestWebController {
      
     List<WeatherZone> weatherZoneList = new ArrayList<WeatherZone>();
      
-    @RequestMapping(value = "/getallweather", method = RequestMethod.GET)
-    public String getWeather(){
+    @RequestMapping(value = "/getsampleweather", method = RequestMethod.GET)
+    public String getSampleWeather(){
+    	//System.out.println("incoming 1: " + param);
+    	
     	WeatherZoneHandler handler = new WeatherZoneHandler();
     	weatherZoneList = handler.getSampleWeather();
-
-    	Gson gson = new Gson();
+     	    	
+    	String result = buildSampleWeatherJSON(weatherZoneList);
+    	return result;
     	
-    	//initially return single element
-    	String jsonWeather = gson.toJson(weatherZoneList.get(0));
-    	System.out.println("jsonified single row: " + jsonWeather);
-    	return jsonWeather;
-    }
+     }
      
     @RequestMapping(value="/postfilename", method=RequestMethod.POST )	
     public void postSampleRequest(@RequestBody String param){
     	WeatherZoneHandler handler = new WeatherZoneHandler();
-    	System.out.println("incoming: " + param);
+    	System.out.println("incoming 2: " + param);
     	Gson gson = new Gson();
     	    	
     	WeatherZone weatherZone = gson.fromJson(param, WeatherZone.class);
-    	
      	handler.doWeatherZoneDataLoad(weatherZone.getProductType());
         
     }
@@ -51,7 +47,7 @@ public class RestWebController {
     public void buildoutputfile(@RequestBody String param){
     	WeatherZoneOutputBuilder builder = new WeatherZoneOutputBuilder();
     	
-    	System.out.println("incoming: " + param);
+    	System.out.println("incoming 3: " + param);
     	Gson gson = new Gson();
     	    	
     	WeatherZone weatherZone = gson.fromJson(param, WeatherZone.class);
@@ -59,4 +55,40 @@ public class RestWebController {
         
     }
     
+    private String buildSampleWeatherJSON(List<WeatherZone> weatherZoneList){
+
+    	Gson gson = new Gson();
+     	StringBuilder buff = new StringBuilder();
+    	
+    	buff.append("[ ");
+    	 
+    	if(weatherZoneList.size()>=3){
+	    	for(int i = 0; i < 3; i++){
+	    		buff.append( gson.toJson(weatherZoneList.get(i)));
+	     		if(i<2)
+	    			buff.append(",");
+	    	}
+	    	buff.append(" ]");
+    	}
+	    
+    	else if(weatherZoneList.size() == 2){
+	    	for(int i = 0; i < 2; i++){
+	    		buff.append( gson.toJson(weatherZoneList.get(i)));
+	     		if(i<1)
+	    			buff.append(",");
+	    	}
+	    	buff.append(" ]");
+    	}
+    	
+    	else if(weatherZoneList.size() == 1){
+     		buff.append( gson.toJson(weatherZoneList.get(0)));
+  	    	buff.append(" ]");
+    	}
+ 
+    	
+	    System.out.println("jsonified buff: " + buff.toString());
+	    
+	    return buff.toString();
+    	
+    }
 }
