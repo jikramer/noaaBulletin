@@ -35,24 +35,23 @@ public class RestWebController {
     @RequestMapping(value="/postfilename", method=RequestMethod.POST )	
     public void postSampleRequest(@RequestBody String param){
     	WeatherZoneHandler handler = new WeatherZoneHandler();
-    	System.out.println("incoming 2: " + param);
+    	System.out.println("postSampleRequest incoming: " + param);
     	Gson gson = new Gson();
     	    	
     	WeatherZone weatherZone = gson.fromJson(param, WeatherZone.class);
-     	handler.doWeatherZoneDataLoad(weatherZone.getProductType());
+     	handler.doWeatherZoneDataLoad(weatherZone.getStation());
         
     }
     
     @RequestMapping(value="/buildoutputfile", method=RequestMethod.POST)	
-    public void buildoutputfile(@RequestBody String param){
+    public void buildOutputFile(@RequestBody String param){
     	WeatherZoneOutputBuilder builder = new WeatherZoneOutputBuilder();
     	
-    	System.out.println("incoming 3: " + param);
+    	System.out.println("buildOutputFile request: " + param);
     	Gson gson = new Gson();
     	    	
     	WeatherZone weatherZone = gson.fromJson(param, WeatherZone.class);
-    	builder.buildOutputFile(weatherZone.getProductType(), weatherZone.getZones(), weatherZone.getKeywords());
-        
+    	builder.buildOutputFile(weatherZone.getStation(), weatherZone.getZones(), weatherZone.getKeywords());
     }
     
     private String buildSampleWeatherJSON(List<WeatherZone> weatherZoneList){
@@ -62,16 +61,16 @@ public class RestWebController {
     	
     	buff.append("[ ");
     	 
-    	if(weatherZoneList.size()>=3){
+    	//TODO - improve verifying size of list big enough to display
+    	if(weatherZoneList.size() >= 3){
 	    	for(int i = 0; i < 3; i++){
 	    		buff.append( gson.toJson(weatherZoneList.get(i)));
-	     		if(i<2)
+	     		if( i < 2)
 	    			buff.append(",");
 	    	}
 	    	buff.append(" ]");
     	}
-	    
-    	else if(weatherZoneList.size() == 2){
+	  	else if(weatherZoneList.size() == 2){
 	    	for(int i = 0; i < 2; i++){
 	    		buff.append( gson.toJson(weatherZoneList.get(i)));
 	     		if(i<1)
@@ -84,11 +83,7 @@ public class RestWebController {
      		buff.append( gson.toJson(weatherZoneList.get(0)));
   	    	buff.append(" ]");
     	}
- 
-    	
-	    System.out.println("jsonified buff: " + buff.toString());
-	    
+    	System.out.println("jsonified buff: " + buff.toString());
 	    return buff.toString();
-    	
-    }
+     }
 }

@@ -32,8 +32,8 @@
 					            	<input type="text" name="fileName" class="form-control" ng-model="post.filename"/>
 					            </div>
 					             <div class = "col-sm-4">
-					            	<label>Produt Type</label>
-					            	<input type="text" name="productType" class="form-control" ng-model="post.productType"/>
+					            	<label>Station</label>
+					            	<input type="text" name="station" class="form-control" ng-model="post.station"/>
 					            </div>
 					        </div>
 							<br>	 
@@ -52,8 +52,8 @@
 				        <form name="xbuildForm" ng-submit="submitForm(post)">
 					    	<div class = "row">
 								<div class = "col-sm-4">	
-		 					    	<label>Product</label>
-							        <input type="text" name="productType"  class= "form-control" ng-model="post.productType"/>
+		 					    	<label>Station</label>
+							        <input type="text" name="station"  class= "form-control" ng-model="post.station"/>
 		 				  		</div>
 								<div class = "col-sm-4">	
 		 			        		<div class="form-group">
@@ -96,6 +96,7 @@
 							    <tr >
 							        <th>Station</th>
 							        <th>Header</th>
+							        <th>Zone Codes</th>
 							        <th>Zones</th>
 							        <th>Station Timestamp</th>
 							        <th>Forecast</th>
@@ -104,8 +105,9 @@
 						       </tr>
 			 					
 							    <tr ng-repeat="x in response">
-							        <td>{{x.productType}}</td>
+							        <td>{{x.station}}</td>
 							        <td>{{x.header}}</td>
+							        <td>{{x.zoneCodes}}</td>
 							        <td>{{x.zones}}</td>
 							        <td>{{x.stationTimestamp}}</td>
 							        <td>{{x.forecast}}</td>

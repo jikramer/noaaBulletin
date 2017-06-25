@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class WeatherZone {
 	
-	private String productType;
+	private String station;
 	private String header;
 	private String zoneCodes;
 	private String zones;
@@ -16,11 +16,11 @@ public class WeatherZone {
 	private String filename;
 	private String keywords;
 	
-	public String getProductType() {
-		return productType;
+	public String getStation() {
+		return station;
 	}
-	public void setProductType(String product) {
-		this.productType = product;
+	public void setStation(String station) {
+		this.station = station;
 	}
 	public String getHeader() {
 		return header;
@@ -91,8 +91,8 @@ public class WeatherZone {
 
 	public String toString(){
 		StringBuilder buff = new StringBuilder();
-		buff.append("productType: " );
-		buff.append(productType );
+		buff.append("station: " );
+		buff.append(station);
 		buff.append("\n");
 		
 		buff.append("header: " );

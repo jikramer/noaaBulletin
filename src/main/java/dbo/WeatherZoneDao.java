@@ -23,15 +23,16 @@ public class WeatherZoneDao {
 			for (WeatherZone weatherZone : weatherZoneList) {
 				try {
 
-					String sql = "{call spWriteWeatherZoneData(?,?,?,?,?,?) }";
+					String sql = "{call spWriteWeatherZoneData(?,?,?,?,?,?,?) }";
 					CallableStatement cs = conn.prepareCall(sql);
 
-					cs.setString(1, weatherZone.getProductType());
+					cs.setString(1, weatherZone.getStation());
 					cs.setString(2, weatherZone.getHeader());
- 					cs.setString(3, weatherZone.getZones());
-					cs.setString(4, weatherZone.getStationTimestamp());
-					cs.setString(5, weatherZone.getForecast());
-					cs.setString(6, fileName);
+ 					cs.setString(3, weatherZone.getZoneCodes());
+ 					cs.setString(4, weatherZone.getZones());
+					cs.setString(5, weatherZone.getStationTimestamp());
+					cs.setString(6, weatherZone.getForecast());
+					cs.setString(7, fileName);
 					cs.execute();
 
 				} catch (Exception e) {
@@ -54,8 +55,9 @@ public class WeatherZoneDao {
 
 			while (rs.next()) {
 				WeatherZone weatherZone = new WeatherZone();
-				weatherZone.setProductType(rs.getString("product"));
+				weatherZone.setStation(rs.getString("station"));
 				weatherZone.setHeader(rs.getString("header"));
+				weatherZone.setZoneCodes(rs.getString("zone_codes"));
 				weatherZone.setZones(rs.getString("zones"));
 				weatherZone.setStationTimestamp(rs.getString("station_timestamp"));
 				weatherZone.setForecast(rs.getString("forecast"));
@@ -72,7 +74,7 @@ public class WeatherZoneDao {
 		return weatherZoneList;
 	}
 
-	public List<WeatherZone> getFilteredData(String productType, String zones, String keywords) {
+	public List<WeatherZone> getFilteredData(String station, String zones, String keywords) {
 		Connection conn = DBUtils.getConnection();
 		List<WeatherZone> weatherZoneList = new ArrayList<WeatherZone>();
 
@@ -81,7 +83,7 @@ public class WeatherZoneDao {
 		
 		try {
 			String query = "select * from weatherZone " 
-					+ " where product like '%" + productType + "%'" 
+					+ " where station like '%" + station + "%'" 
 					+ " and zones like '%" + zones + "%'"
 					+ " and forecast like '%" + keywords + "%'";
 					
@@ -91,8 +93,9 @@ public class WeatherZoneDao {
 
 			while (rs.next())  {
 				WeatherZone weatherZone = new WeatherZone();
-				weatherZone.setProductType(rs.getString("product"));
+				weatherZone.setStation(rs.getString("station"));
 				weatherZone.setHeader(rs.getString("header"));
+				weatherZone.setZoneCodes(rs.getString("zone_codes"));
 				weatherZone.setZones(rs.getString("zones"));
 				weatherZone.setStationTimestamp(rs.getString("station_timestamp"));
 				weatherZone.setForecast(rs.getString("forecast"));
