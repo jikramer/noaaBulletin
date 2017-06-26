@@ -39,7 +39,19 @@ app.controller('postcontroller', function($scope, $http, $location) {
 app.controller('getcontroller', function($scope, $http, $location) {
 	var messageClassName = "hide";
 	var screenMessage = "";
-
+	var doSample = false;
+	
+	$scope.items = [];
+	$scope.newitem = '';
+	$scope.add = function(){
+	    if ($scope.items.length < 4) {
+	      $scope.items.push($scope.newitem);
+	    }
+	}
+	$scope.del = function(i){
+	    $scope.items.splice(i,1);
+	}
+	
 	$scope.messageClass = function(){
     	return messageClassName;
     }
@@ -48,7 +60,22 @@ app.controller('getcontroller', function($scope, $http, $location) {
     	return screenMessage;
     }	
 	
-	$scope.getfunction = function(){
+	
+	$scope.showSample = function() {
+		var value = "";
+		
+		if(!doSample){
+			value = "hide";
+		}
+		value = "show";
+		
+		return value;
+	};
+
+	
+	
+	
+	$scope.getfunction = function(post){
         var url = $location.absUrl() + "getsampleweather";
 		
 		var config = {
@@ -61,7 +88,8 @@ app.controller('getcontroller', function($scope, $http, $location) {
          	return "Sample Result Set:";
          }	
          
-        $http.get(url, config).then(function (response) {
+        $http.post(url , post, config).then(function (response) {		    
+    		doSample=(doSample)?false:true;
         	$scope.response = response.data
  
         }, function (response) {
@@ -69,7 +97,7 @@ app.controller('getcontroller', function($scope, $http, $location) {
         });
     }
 	
-	$scope.submitForm = function(post){
+	$scope.xsubmitForm = function(post){
         var url = $location.absUrl() + "buildoutputfile";
          
 		var config = {

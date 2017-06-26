@@ -20,9 +20,9 @@ public class RestWebController {
      
     List<WeatherZone> weatherZoneList = new ArrayList<WeatherZone>();
      
-    @RequestMapping(value = "/getsampleweather", method = RequestMethod.GET)
-    public String getSampleWeather(){
-    	//System.out.println("incoming 1: " + param);
+    @RequestMapping(value = "/getsampleweather", method = RequestMethod.POST)
+    public String getSampleWeather(@RequestBody String param){
+    	System.out.println("incoming 1: " );
     	
     	WeatherZoneHandler handler = new WeatherZoneHandler();
     	weatherZoneList = handler.getSampleWeather();

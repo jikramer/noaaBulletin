@@ -25,7 +25,7 @@
 		 	     
 			    <div id ="doPost" style="display: none;">
 				    <div ng-controller="postcontroller">
-				        <form name="fileNameForm" ng-submit="submitForm(post)">
+				        <form name="fileNameForm" >
 				        	<div class = "row">
 					        	<div class = "col-sm-4">
 					            	<label>File Name</label>
@@ -62,16 +62,31 @@
 						  			</div>	
 						    	</div>
 				 		
-				 				<div class = "col-sm-4">	
-		 					    	<label>Keywords </label>
-							        <input type="text" name="keywords"  class= "form-control" 	ng-model="post.keywords"/>
+				 				<div class = "col-sm-2">	
+		 					    	<label>Keyword</label>
+							        <input type="text" name="keywords0"  class= "form-control" ng-model="post.keywords0"/>	
 		 				  		</div>
-				
+		 				  		<div class = "col-sm-2">					        
+  									<span class="btn btn-primary" ng-click='add()'>Add</span>
+		 				  		</div>
+		 				  	</div>
+		 				  	<div class="row">
+		 				  		<div class="col-sm-offset-8 col-sm-4">
+  									<div ng-repeat="(i, name) in items track by $index">	
+		 					    		<label>Keyword</label>
+									    <input name="keywords[i]" ng-model="post.keywords[i]"> 
+									    <span class="btn btn-warning" ng-click="del(i)" >Delete</span>             
+									</div>
+								  </div>								 
 						  	</div>
 							<br>
 						    <div class = "row">
 								<div class = "col-sm-3">	
-						     		<button id="btn-id" ng-click="getfunction()" class="btn btn-default" onClick="showSample();">View Sample</button>
+						 <!--      		<button id="btn-id" ng-click="getfunction()" class="btn btn-default" onClick="showSample();">View Sample</button> -->
+						     		<button id="btn-id" ng-click="getfunction(post)" class="btn btn-default">View Sample</button>
+						        
+						        
+						        
 						        </div>
 								<div class = "col-sm-3">	
 						     		<button id="btn-id" ng-click="buildfunction()" class="btn btn-primary" onClick="showBuild();">Build Output File</button>
@@ -82,14 +97,9 @@
 						        </div>
 						
 						    </div>
-						</form>			
-					    <div id = "doBuild" style="display: none;">
-					    	<hr>
-					        <h2> <small> {{label()}} </small></h2>
-					   		<p><span ng-class="messageClass()">{{xmessage()}}</span></p>
-						</div>
+						</form>	
 						
-						<div id = "doSample" style="display: none;">
+						<div id = "doSample" ng-class="showSample();">
 						    <h2> <small> {{label()}} </small></h2>
 							 
 		 					<table class="table table-striped" >
