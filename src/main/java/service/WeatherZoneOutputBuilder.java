@@ -11,7 +11,9 @@ import model.WeatherZone;
 
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.poi.xwpf.usermodel.XWPFRun; 
+
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STHighlightColor;
 
 public class WeatherZoneOutputBuilder {
 
@@ -65,14 +67,13 @@ public class WeatherZoneOutputBuilder {
 		 	XWPFRun run=paragraph.createRun();
 		 	run.setFontSize(11);
 		    run.setFontFamily("Courier New");
-		      
 		 	run.setText("Test " + station + " Forecasts");
  			run.addBreak();
  		    run.addBreak();
-			 
+			  
  			for (WeatherZone weatherZone : weatherZones) {
 				count++;
- 			
+				 
  			    run.setText(weatherZone.getStation());
  			    run.addBreak();
  	 			 
@@ -83,36 +84,77 @@ public class WeatherZoneOutputBuilder {
 					if( i < aHeader.length -1)
 						run.addBreak();
 				}	
-				
-		 
+
+			 
 				run.setText(weatherZone.getStationTimestamp());
 				run.addBreak();
 		 			 
 				run.setText(weatherZone.getZoneCodes().replace("|", ""));
 				run.addBreak();
 		 			 
+				//colorize
+				run = paragraph.createRun();	
+			 	run.setFontSize(11);
+			    run.setFontFamily("Courier New");
+				run.getCTR().addNewRPr().addNewHighlight().setVal(STHighlightColor.YELLOW); 				  
+
 				run.setText(weatherZone.getZones().replace("|", ""));
 				run.addBreak();
-		 			 
+
+				//set back to default 
+				run = paragraph.createRun();	
+			 	run.setFontSize(11);
+			    run.setFontFamily("Courier New");
+ 				
+				
 				run.setText(weatherZone.getStationTimestamp());
 				run.addBreak();
 		 		
+ 				
 				String forecast = weatherZone.getForecast();
 				String[] aForecast = forecast.split("\\n");
 				for(int i = 0; i < aForecast.length; i++){
 					System.out.println("forcast row: " + aForecast[i]);
-					run.setText(aForecast[i]);
-					run.addBreak();
-				}	
 				
-	
-				 
+					if(keywords != null && keywords != "" && aForecast[i].contains(keywords)){
+						
+						int startIndex = aForecast[i].indexOf(keywords);
+						int endIndex = keywords.length() + startIndex;
+						
+						String preKey = aForecast[i].substring(0, aForecast[i].indexOf(keywords));
+						String postKey = aForecast[i].substring(endIndex, aForecast[i].length());
+						String keyword = aForecast[i].substring(startIndex, endIndex);
+
+						//do pre
+						run.setText(preKey);
+						
+						//colorize
+						run = paragraph.createRun();	
+					 	run.setFontSize(11);
+					    run.setFontFamily("Courier New");
+						run.getCTR().addNewRPr().addNewHighlight().setVal(STHighlightColor.MAGENTA); 				  
+						run.setText(keyword);
+						
+						//set back to default 
+						run = paragraph.createRun();	
+					 	run.setFontSize(11);
+					    run.setFontFamily("Courier New");
+		 				
+						run.setText(postKey);
+						
+						
+					}else{
+						run.setText(aForecast[i]);
+					}
+					run.addBreak();
+					
+				}	
+			 
 				run.setText("$$");
  			    
  			    run.addBreak();
  			    run.addBreak();
-  			
-			}	
+  	 		}	
  			
 			run.setText("# of " + zones + " found: " + count);
 			

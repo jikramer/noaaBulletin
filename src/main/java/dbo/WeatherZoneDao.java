@@ -48,7 +48,7 @@ public class WeatherZoneDao {
 		List<WeatherZone> weatherZoneList = new ArrayList<WeatherZone>();
 
 		try {
-			String query = "select distinct * from weatherZone limit  5";
+			String query = "select distinct * from weatherZone where zone_codes like 'NY%' limit  5";
 
 			Statement st = conn.createStatement();
 			ResultSet rs = st.executeQuery(query);
