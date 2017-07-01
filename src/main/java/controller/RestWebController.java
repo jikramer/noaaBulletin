@@ -32,7 +32,7 @@ public class RestWebController {
     	
      }
      
-    @RequestMapping(value="/postfilename", method=RequestMethod.POST )	
+    @RequestMapping(value="/doParse", method=RequestMethod.POST )	
     public void postSampleRequest(@RequestBody String param){
     	WeatherZoneHandler handler = new WeatherZoneHandler();
     	System.out.println("postSampleRequest incoming: " + param);
@@ -51,7 +51,7 @@ public class RestWebController {
     	Gson gson = new Gson();
     	    	
     	WeatherZone weatherZone = gson.fromJson(param, WeatherZone.class);
-    	builder.buildOutputFile(weatherZone.getStation(), weatherZone.getZones(), weatherZone.getKeywords());
+    	builder.buildOutputFile(weatherZone.getStation(), weatherZone.getZones(), weatherZone.getKeyword() );
     }
     
     private String buildSampleWeatherJSON(List<WeatherZone> weatherZoneList){

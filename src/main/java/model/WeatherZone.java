@@ -1,6 +1,7 @@
 package model;
 
 import java.util.Date;
+import java.util.HashMap;
 
 public class WeatherZone {
 	
@@ -14,7 +15,13 @@ public class WeatherZone {
 	private String forecast;
 	private Date dateCreated;
 	private String filename;
-	private String keywords;
+	private String keyword;
+	private HashMap<String, String> keywords;
+	
+	private HashMap<String, String> files;
+	private HashMap<String, String> stations;
+
+	
 	
 	public String getStation() {
 		return station;
@@ -137,14 +144,40 @@ public class WeatherZone {
 	/**
 	 * @return the keywords
 	 */
-	public String getKeywords() {
+	public String getKeyword() {
+		return keyword;
+	}
+	/**
+	 * @param keywords the keywords to set
+	 */
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
+	}
+	/**
+	 * @return the keywords
+	 */
+	public HashMap<String, String> getKeywords() {
 		return keywords;
 	}
 	/**
 	 * @param keywords the keywords to set
 	 */
-	public void setKeywords(String keywords) {
+	public void setKeywords(HashMap<String, String> keywords) {
 		this.keywords = keywords;
 	}
+
+	public HashMap<String, String> getFiles() {
+		return files;
+	}
+	public void setFiles(HashMap<String, String> files) {
+		this.files = files;
+	}
+	public HashMap<String, String> getStations() {
+		return stations;
+	}
+	public void setStations(HashMap<String, String> stations) {
+		this.stations = stations;
+	}
+
 }
  
