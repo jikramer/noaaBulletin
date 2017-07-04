@@ -51,7 +51,7 @@ public class RestWebController {
     	Gson gson = new Gson();
     	    	
     	WeatherZone weatherZone = gson.fromJson(param, WeatherZone.class);
-    	builder.buildOutputFile(weatherZone.getStation(), weatherZone.getZones(), weatherZone.getKeyword() );
+    	builder.buildOutputFile(weatherZone.getStation(), weatherZone.getZones(), weatherZone.getKeyword(), weatherZone.getFileNameOut(), weatherZone.getadditionalzones() );
     }
     
     private String buildSampleWeatherJSON(List<WeatherZone> weatherZoneList){

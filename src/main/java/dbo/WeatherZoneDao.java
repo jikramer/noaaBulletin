@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import model.WeatherZone;
 import utils.DBUtils;
@@ -74,20 +75,28 @@ public class WeatherZoneDao {
 		return weatherZoneList;
 	}
 
-	public List<WeatherZone> getFilteredData(String station, String zones, String keywords) {
+	public List<WeatherZone> getFilteredData(String station, String zones, String keywords, HashMap additionalZones) {
 		Connection conn = DBUtils.getConnection();
 		List<WeatherZone> weatherZoneList = new ArrayList<WeatherZone>();
-
+ 		
 		if ( keywords == null)
 			keywords = "";
 		
 		try {
+
 			String query = "select * from weatherZone " 
 					+ " where station like '%" + station + "%'" 
-					+ " and zones like '%" + zones + "%'"
-					+ " and forecast like '%" + keywords + "%'";
-					
+					+ " and zones like '%" + zones + "%'";
+					//+ " and forecast like '%" + keywords + "%'";
 
+	 		
+			Set<String>keys = (Set)additionalZones.keySet();
+
+	 		for(String key: keys){
+	 		    query = query +  " or zones like '%" + additionalZones.get(key) + "%'";
+	 		}
+
+ 
 			Statement st = conn.createStatement();
 			ResultSet rs = st.executeQuery(query);
 

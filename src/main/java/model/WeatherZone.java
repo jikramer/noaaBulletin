@@ -9,6 +9,7 @@ public class WeatherZone {
 	private String header;
 	private String zoneCodes;
 	private String zones;
+ 	private HashMap<String, String> additionalzones;
 	private String specialInfo;
 	private String stationTimestamp;
 	private String stationLocation;
@@ -20,6 +21,7 @@ public class WeatherZone {
 	
 	private HashMap<String, String> files;
 	private HashMap<String, String> stations;
+	private String fileNameOut;
 
 	
 	
@@ -177,6 +179,30 @@ public class WeatherZone {
 	}
 	public void setStations(HashMap<String, String> stations) {
 		this.stations = stations;
+	}
+	/**
+	 * @return the fileNameOut
+	 */
+	public String getFileNameOut() {
+		return fileNameOut;
+	}
+	/**
+	 * @param fileNameOut the fileNameOut to set
+	 */
+	public void setFileNameOut(String fileNameOut) {
+		this.fileNameOut = fileNameOut;
+	}
+	/**
+	 * @return the additionalZones
+	 */
+	public HashMap<String, String> getadditionalzones() {
+		return additionalzones;
+	}
+	/**
+	 * @param additionalZones the additionalZones to set
+	 */
+	public void setAdditionalZones(HashMap<String, String> additionalzones) {
+		this.additionalzones = additionalzones;
 	}
 
 }
