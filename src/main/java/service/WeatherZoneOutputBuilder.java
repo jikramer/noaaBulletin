@@ -43,7 +43,8 @@ public class WeatherZoneOutputBuilder {
 	public void buildOutputFile(String station, String zones, String keywords, String fileNameOut, HashMap additionalZones) {
 		if (keywords == null) 
 			keywords = "";
-
+		if ( additionalZones == null )
+			additionalZones = new HashMap();
 		if(fileNameOut == null || fileNameOut == "")
 			fileNameOut = "testOut";
 		writeTxtFile(station, zones, keywords, fileNameOut,  additionalZones);
@@ -227,13 +228,14 @@ public class WeatherZoneOutputBuilder {
  			    run.addBreak();
  			    run.addBreak();
   	 		}	
- 			
-			Set<String>keys = (Set)additionalZones.keySet();
-			String zout = zones;	
-	 		for(String key: keys){
-	 		    zout = zout +  ", "+ additionalZones.get(key) ;
-	 		}
-
+ 			String zout = zones;	
+	
+ 			if (additionalZones!= null){
+	 			Set<String>keys = (Set)additionalZones.keySet();
+		 		for(String key: keys){
+		 		    zout = zout +  ", "+ additionalZones.get(key) ;
+		 		}
+	 			}
  			
  	 		run.setText("# of " + zout + " found: " + count);
 			

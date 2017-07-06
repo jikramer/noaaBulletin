@@ -57,7 +57,7 @@
 
 		<div id="buildBlock" ng-show="buildContent">
 			<div ng-controller="buildcontroller">
-				<form name="buildForm" id="post">
+				<form name="buildForm" id="buildForm">
 					<div class="row">
 
 						<div class="col-sm-2">
@@ -122,7 +122,7 @@
 							</div>
 
 							<div class="col-sm-2">
-								<button id="btn-clear" ng-click="clearall()"
+								<button id="btn-clear" ng-click="clearall(post)"
 									class="btn btn-default">Clear All</button>
 							</div>
 
@@ -141,7 +141,7 @@
 							<span ng-class="messageClass()">{{message()}}</span>
 						</p>
 				</form>
-
+<p>Pristine: {{form.$pristine}}</p>
 				<div id="doSample" ng-class="showSample();">
 					<h2>
 						<small> {{label()}} </small>

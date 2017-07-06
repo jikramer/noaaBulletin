@@ -26,6 +26,7 @@ public class RestWebController {
     	
     	WeatherZoneHandler handler = new WeatherZoneHandler();
     	weatherZoneList = handler.getSampleWeather();
+    //	weatherZoneList =handler.getSampleWeather(weatherZone.getStation(), weatherZone.getZones(), weatherZone.getKeyword(), weatherZone.getFileNameOut(), weatherZone.getadditionalzones() );
      	    	
     	String result = buildSampleWeatherJSON(weatherZoneList);
     	return result;

@@ -44,6 +44,7 @@ public class WeatherZoneDao {
 		}
 	}
 
+	//pu   
 	public List<WeatherZone> getSampleData() {
 		Connection conn = DBUtils.getConnection();
 		List<WeatherZone> weatherZoneList = new ArrayList<WeatherZone>();

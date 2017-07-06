@@ -48,7 +48,6 @@ app.controller('parsecontroller', function($scope, $http, $location) {
 		$scope.parseForm.$setPristine();
 	    $scope.parseForm.$setUntouched();   
 	}
-
 	
 });
 
@@ -153,23 +152,34 @@ app.controller('buildcontroller', function($scope, $http, $location) {
 		});
 	}
 
-	$scope.clearall = function() {
+	$scope.clearall = function(post) {
 		
-		$scope.form = {};
+		$scope.buildForm = {};
 		screenMessage = "";	
 	
-	    $scope.post.station = '';
-	    $scope.post.zones = '';
-	    $scope.post.additionalzones = '';
-	    $scope.post.keyword = '';
-	    $scope.post.fileNameOut = '';
+	    post.station = '';
+	    post.zones = '';
+	    post.additionalzones = [];
+	    post.keywords = [];
+	    
+	    post.keyword = '';
+	    post.fileNameOut = '';
 	  
 		$scope.response = '';
 		doSample = false;
  		$scope.value = 'hide';
-		$scope.buildForm.$setPristine();
-	    $scope.buildForm.$setUntouched();   
-	     
+	
+ 		$scope.items = [];
+ 		$scope.zoneitems = [];
+ 		
+ 	//		$scope.buildForm.$setPristine();
+        $scope.model = '';
+ 		
+ 	//	$scope.buildForm.$setPristine();
+	//    $scope.buildForm.$setUntouched();   
+	  
+ 		
+ 		//document.getElementById("buildForm").reset();
 	}
 
 });
