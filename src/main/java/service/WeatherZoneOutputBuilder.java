@@ -43,45 +43,14 @@ public class WeatherZoneOutputBuilder {
 	public void buildOutputFile(String station, String zones, String keywords, String fileNameOut, HashMap additionalZones) {
 		if (keywords == null) 
 			keywords = "";
-		if ( additionalZones == null )
+		//if ( additionalZones == null )
 			additionalZones = new HashMap();
 		if(fileNameOut == null || fileNameOut == "")
 			fileNameOut = "testOut";
-		writeTxtFile(station, zones, keywords, fileNameOut,  additionalZones);
+		//writeTxtFile(station, zones, keywords, fileNameOut,  additionalZones);
 		writeWordFile(station, zones, keywords, fileNameOut,  additionalZones );
 	}
 
-	private void writeTxtFile(String station, String zones, String keywords, String fileNameOut, HashMap additionalZones) {
-		int count = 0;
-		WeatherZoneDao dao = new WeatherZoneDao();
-		List<WeatherZone> weatherZones = dao.getFilteredData(station, zones, keywords, additionalZones);
-
-		try {
-			PrintWriter writer = new PrintWriter("./output/" + fileNameOut + ".txt", "UTF-8");
-			writer.println("Test " + station + " Forecasts");
-			writer.println("\n");
-
-			for (WeatherZone weatherZone : weatherZones) {
-				count++;
-				writer.println(weatherZone.getStation());
-				String header = weatherZone.getHeader();
-				header = header.replace("| ", "\n");
-
-				writer.println(header.trim());
-				writer.println(weatherZone.getStationTimestamp());
-				writer.println(weatherZone.getZoneCodes().replace("|", ""));
-				writer.println(weatherZone.getZones().replace("|", ""));
-				writer.println(weatherZone.getStationTimestamp());
-				writer.println(weatherZone.getForecast() + "$$");
-				writer.println("");
-			}
-			writer.println("\n");
-			writer.println("# of " + zones + " found: " + count);
-
-			writer.close();
-		} catch (IOException e) {
-		}
-	}
 
 	private void writeWordFile(String station, String zones, String keywords, String fileNameOut,  HashMap additionalZones) {
 
@@ -89,12 +58,13 @@ public class WeatherZoneOutputBuilder {
 		WeatherZoneDao dao = new WeatherZoneDao();
 		List<WeatherZone> weatherZones = dao.getFilteredData(station, zones, keywords, additionalZones);
 
+		additionalZones = new HashMap();
 		try {
 			FileOutputStream out = new FileOutputStream(new File("./output/" + fileNameOut + ".docx"));
 			XWPFDocument doc = new XWPFDocument(); 
 			XWPFParagraph paragraph = doc.createParagraph();
 		 	XWPFRun run=paragraph.createRun();
-		 	run.setFontSize(11);
+		 	run.setFontSize(10);
 		    run.setFontFamily("Courier New");
 		 	run.setText("Test " + station + " Forecasts");
  			run.addBreak();
@@ -102,43 +72,42 @@ public class WeatherZoneOutputBuilder {
 			  
  			for (WeatherZone weatherZone : weatherZones) {
 				count++;
-				 
- 			    run.setText(weatherZone.getStation());
+				
+				//station
+ 			    run.setText(weatherZone.getStation().replace("-", ""));
  			    run.addBreak();
- 	 			 
+ 	 			
+ 			    //header
  			    String header = weatherZone.getHeader();
 				String[] aHeader = header.split("\\|");
 				for(int i = 0; i < aHeader.length; i++){
-					run.setText(aHeader[i].trim());
+					run.setText(aHeader[i].replace("-", "").trim());
 					if( i < aHeader.length -1)
 						run.addBreak();
 				}	
 
-			 
-				run.setText(weatherZone.getStationTimestamp());
+				//1st timestamp
+				run.setText(weatherZone.getStationTimestamp().replace("-", "").trim());
 				run.addBreak();
-		 			 
-				run.setText(weatherZone.getZoneCodes().replace("|", ""));
+		 		
+				//zone codes
+				run.setText(weatherZone.getZoneCodes().replace("|", "").replace("-", "").trim());
 	 			run.addBreak();
 	 			
+	 			//zones
 	 			String weatherZoneText = weatherZone.getZones();
-
-				Set<String>keys = (Set)additionalZones.keySet();
-				List <String> xZones = new ArrayList<String>();
-		 		for(String key: keys){
-		 			xZones.add((String)additionalZones.get(key));
-		 		}
-
+	 			System.out.println("weatherZoneText: " + weatherZoneText );
 	 			
-	 			
-				if(weatherZoneText.equals(zones.toUpperCase()+ "-  ")){		
+	 			////////////
+				if(weatherZoneText.equals(zones.toUpperCase()+ "- | ")){		
  		 			//colorize
 					run = paragraph.createRun();	
-				 	run.setFontSize(11);
+				 	run.setFontSize(10);
 				    run.setFontFamily("Courier New");
 					run.getCTR().addNewRPr().addNewHighlight().setVal(STHighlightColor.YELLOW); 				  
 
-					run.setText(weatherZoneText);
+					run.setText(weatherZoneText.replace("|",  "").replace("-", "").trim());
+					run.addBreak();
 				}else if (weatherZoneText.indexOf(zones.toUpperCase() + "-") > -1){
  					int startIndex = weatherZoneText.indexOf(zones.toUpperCase() + "-");
 					int endIndex = (zones.toUpperCase() + "-").length() + startIndex;
@@ -148,75 +117,62 @@ public class WeatherZoneOutputBuilder {
 					String keyword = weatherZoneText.substring(startIndex, endIndex);
 					
  					//do pre
-					run.setText(preKey);
+					if(preKey.indexOf("|") > -1){
+						String[] aPreKey = preKey.split("\\|");
+						for ( int i = 0; i < aPreKey.length; i++){
+							run.setText(aPreKey[i].replace("-", "").trim());
+							if (i < aPreKey.length-1 )
+								run.addBreak();
+						}
+					}else
+						run.setText(preKey.replace("-", "").trim());
 					
 					//colorize
 					run = paragraph.createRun();	
-				 	run.setFontSize(11);
+				 	run.setFontSize(10);
 				    run.setFontFamily("Courier New");
 					run.getCTR().addNewRPr().addNewHighlight().setVal(STHighlightColor.YELLOW); 				  
-					run.setText(keyword);
+					
+					if(keyword.indexOf("|") > -1){
+						String[] aKeyword = keyword.split("\\|");
+						for ( int i = 0; i< aKeyword.length; i++){
+							run.setText(aKeyword[i].replace("-", "").trim());
+							run.addBreak();
+						}
+					}else
+						run.setText(keyword.replace("-", "").trim());
 					
 					//set back to default 
 					run = paragraph.createRun();	
-				 	run.setFontSize(11);
+				 	run.setFontSize(10);
 				    run.setFontFamily("Courier New");
-						
-					run.setText(postKey);
-	 			}
-	 			
-				for (String z : xZones){
 					
-					if(weatherZoneText.equals(z.toUpperCase()+ "-  ")){		
-	 		 			//colorize
-						run = paragraph.createRun();	
-					 	run.setFontSize(11);
-					    run.setFontFamily("Courier New");
-						run.getCTR().addNewRPr().addNewHighlight().setVal(STHighlightColor.YELLOW); 				  
-
-						run.setText(weatherZoneText);
-					}else if (weatherZoneText.indexOf(z.toUpperCase() + "-") > -1){
-	 					int startIndex = weatherZoneText.indexOf(z.toUpperCase() + "-");
-						int endIndex = (z.toUpperCase() + "-").length() + startIndex;
-						
-						String preKey = weatherZoneText.substring(0, weatherZoneText.indexOf(z.toUpperCase() + "-"));
-						String postKey = weatherZoneText.substring(endIndex, weatherZoneText.length());
-						String keyword = weatherZoneText.substring(startIndex, endIndex);
-						
-	 					//do pre
-						run.setText(preKey);
-						
-						//colorize
-						run = paragraph.createRun();	
-					 	run.setFontSize(11);
-					    run.setFontFamily("Courier New");
-						run.getCTR().addNewRPr().addNewHighlight().setVal(STHighlightColor.YELLOW); 				  
-						run.setText(keyword);
-						
-						//set back to default 
-						run = paragraph.createRun();	
-					 	run.setFontSize(11);
-					    run.setFontFamily("Courier New");
-							
-						run.setText(postKey);
-		 			}
- 					
-				}
-		 			
-	 			
-				run.addBreak();
-
+				 
+					if(postKey.indexOf("|") > -1){
+						String[] aPostKey = postKey.split("\\|");
+						for ( int i = 0; i< aPostKey.length; i++){
+							run.setText(aPostKey[i].replace("-", "").trim());
+							if (i < aPostKey.length-1 )
+								run.addBreak();
+						}
+					}else
+						run.setText(postKey.replace("-", "").trim());
 				
+				}
+	 			
+		 		////////////
+				 //run.addBreak();
+ 				
 				run = paragraph.createRun();	
-			 	run.setFontSize(11);
+			 	run.setFontSize(10);
 			    run.setFontFamily("Courier New");
 				run.getCTR().addNewRPr().addNewHighlight().setVal(STHighlightColor.YELLOW); 				  
- 				run.setText(weatherZone.getStationTimestamp());
+ 				run.setText(weatherZone.getStationTimestamp().replace("-", "").trim());
 				run.addBreak();
 
 				//set back to default 
 				run = paragraph.createRun();	
-			 	run.setFontSize(11);
+			 	run.setFontSize(10);
 			    run.setFontFamily("Courier New");
 
 				String forecast = weatherZone.getForecast();
@@ -228,7 +184,7 @@ public class WeatherZoneOutputBuilder {
  			    run.addBreak();
  			    run.addBreak();
   	 		}	
- 			String zout = zones;	
+ 			/*String zout = zones;	
 	
  			if (additionalZones!= null){
 	 			Set<String>keys = (Set)additionalZones.keySet();
@@ -236,8 +192,8 @@ public class WeatherZoneOutputBuilder {
 		 		    zout = zout +  ", "+ additionalZones.get(key) ;
 		 		}
 	 			}
- 			
- 	 		run.setText("# of " + zout + " found: " + count);
+ 			*/
+ 	 		run.setText("# of " + zones+ " found: " + count);
 			
 			doc.write(out);
 		    out.close();
@@ -284,24 +240,24 @@ public class WeatherZoneOutputBuilder {
 			String keyword = forecastRow.substring(startIndex, endIndex);
 //	
 			//do pre
-			run.setText(preKey);
+			run.setText(preKey.trim());
 			
 			//colorize
 			run = paragraph.createRun();	
-		 	run.setFontSize(11);
+		 	run.setFontSize(10);
 		    run.setFontFamily("Courier New");
 			run.getCTR().addNewRPr().addNewHighlight().setVal(color); 				  
-			run.setText(keyword);
+			run.setText(keyword.trim());
 			
 			//set back to default 
 			run = paragraph.createRun();	
-		 	run.setFontSize(11);
+		 	run.setFontSize(10);
 		    run.setFontFamily("Courier New");
 				
-			run.setText(postKey);
+			run.setText(postKey.trim());
 			
 		}else{
-			run.setText(forecastRow);
+			run.setText(forecastRow.trim());
 		}
 		run.addBreak();
 	
@@ -329,22 +285,22 @@ public class WeatherZoneOutputBuilder {
 			//do pre
 			run = paragraph.createRun();	
 
-			run.setFontSize(11);
+			run.setFontSize(10);
 		    run.setFontFamily("Courier New");
-			run.setText(preKey);
+			run.setText(preKey.trim());
 			
 			//colorize
 			run = paragraph.createRun();	
-		 	run.setFontSize(11);
+		 	run.setFontSize(10);
 		    run.setFontFamily("Courier New");
 			run.getCTR().addNewRPr().addNewHighlight().setVal(color); 				  
-			run.setText(keyword);
+			run.setText(keyword.trim());
 
 			//set back to default 
 			run = paragraph.createRun();	
-		 	run.setFontSize(11);
+		 	run.setFontSize(10);
 		    run.setFontFamily("Courier New");
-			run.setText(postKey);
+			run.setText(postKey.trim());
 			
 	//	}else{
 	//		run.setText(forecastRow);

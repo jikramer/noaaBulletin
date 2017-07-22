@@ -44,7 +44,7 @@ public class WeatherZoneDao {
 		}
 	}
 
-	//pu   
+	
 	public List<WeatherZone> getSampleData() {
 		Connection conn = DBUtils.getConnection();
 		List<WeatherZone> weatherZoneList = new ArrayList<WeatherZone>();
@@ -90,14 +90,14 @@ public class WeatherZoneDao {
 					+ " and zones like '%" + zones + "%'";
 					//+ " and forecast like '%" + keywords + "%'";
 
-	 		
-			Set<String>keys = (Set)additionalZones.keySet();
-
-	 		for(String key: keys){
-	 		    query = query +  " or zones like '%" + additionalZones.get(key) + "%'";
-	 		}
-
- 
+	/*		if(additionalZones != null){
+				Set<String>keys = (Set)additionalZones.keySet();
+	
+		 		for(String key: keys){
+		 		    query = query +  " or zones like '%" + additionalZones.get(key) + "%'";
+		 		}
+			}
+ */
 			Statement st = conn.createStatement();
 			ResultSet rs = st.executeQuery(query);
 

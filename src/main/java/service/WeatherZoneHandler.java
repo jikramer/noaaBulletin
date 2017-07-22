@@ -49,6 +49,16 @@ public class WeatherZoneHandler {
 		return weatherZoneDataMap;
 	}
 
+
+	
+	public List<WeatherZone> getSampleData(String station, String zones, String keywords,   HashMap <String, String>additionalZones) {
+		WeatherZoneDao weatherZoneDao = new WeatherZoneDao(); 
+ 
+		List<WeatherZone> weatherZones = weatherZoneDao.getFilteredData(station, zones, keywords, additionalZones);
+		return weatherZones;
+	}
+	
+	
 	private ArrayList<WeatherZone> parseFile(File file) {
 
 		ArrayList<WeatherZone> weatherZoneList = new ArrayList<WeatherZone>();

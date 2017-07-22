@@ -172,14 +172,7 @@ app.controller('buildcontroller', function($scope, $http, $location) {
  		$scope.items = [];
  		$scope.zoneitems = [];
  		
- 	//		$scope.buildForm.$setPristine();
         $scope.model = '';
- 		
- 	//	$scope.buildForm.$setPristine();
-	//    $scope.buildForm.$setUntouched();   
-	  
- 		
- 		//document.getElementById("buildForm").reset();
-	}
+  	}
 
 });

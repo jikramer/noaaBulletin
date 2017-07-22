@@ -23,12 +23,16 @@ public class RestWebController {
     @RequestMapping(value = "/getsampleweather", method = RequestMethod.POST)
     public String getSampleWeather(@RequestBody String param){
     	System.out.println("incoming 1: " );
-    	
     	WeatherZoneHandler handler = new WeatherZoneHandler();
-    	weatherZoneList = handler.getSampleWeather();
-    //	weatherZoneList =handler.getSampleWeather(weatherZone.getStation(), weatherZone.getZones(), weatherZone.getKeyword(), weatherZone.getFileNameOut(), weatherZone.getadditionalzones() );
-     	    	
-    	String result = buildSampleWeatherJSON(weatherZoneList);
+      
+    	System.out.println("buildOutputFile request: " + param);
+    	Gson gson = new Gson();
+    	    	
+    	WeatherZone weatherZone = gson.fromJson(param, WeatherZone.class);
+    
+		weatherZoneList = handler.getSampleData(weatherZone.getStation(), weatherZone.getZones(), weatherZone.getKeyword(),  weatherZone.getadditionalzones() );
+		
+		String result = buildSampleWeatherJSON(weatherZoneList);
     	return result;
     	
      }
