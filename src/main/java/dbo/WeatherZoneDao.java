@@ -76,7 +76,7 @@ public class WeatherZoneDao {
 		return weatherZoneList;
 	}
 
-	public List<WeatherZone> getFilteredData(String station, String zones, String keywords, HashMap additionalZones) {
+	public List<WeatherZone> getFilteredData(String station, String zones, String keywords, HashMap additionalZones, String fileName) {
 		Connection conn = DBUtils.getConnection();
 		List<WeatherZone> weatherZoneList = new ArrayList<WeatherZone>();
  		
@@ -85,9 +85,12 @@ public class WeatherZoneDao {
 		
 		try {
 
+			 
 			String query = "select * from weatherZone " 
 					+ " where station like '%" + station + "%'" 
-					+ " and zones like '%" + zones + "%'";
+					+ " and zones like '%" + zones + "%'"
+					+ " and file_id = '" + fileName + "'"
+					;
 					//+ " and forecast like '%" + keywords + "%'";
 
 	/*		if(additionalZones != null){
@@ -120,6 +123,23 @@ public class WeatherZoneDao {
 			System.err.println(e.getMessage());
 		}
 		return weatherZoneList;
+	}
+
+
+	public void deleteTable() {
+		Connection conn = DBUtils.getConnection();
+
+		try {
+			String query = "truncate table weatherZone ";
+
+			Statement st = conn.createStatement();
+			boolean rs = st.execute(query);
+ 			st.close();
+
+		} catch (Exception e) {
+			System.err.println("Got an exception! ");
+			System.err.println(e.getMessage());
+		}
 	}
 
 	

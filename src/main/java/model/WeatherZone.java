@@ -83,8 +83,8 @@ public class WeatherZone {
 	/**
 	 * @param fileId the fileId to set
 	 */
-	public void setFilename(String fileId) {
-		this.filename = fileId;
+	public void setFilename(String fileName) {
+		this.filename = fileName;
 	}
 	/**
 	 * @return the zone_codes

@@ -50,11 +50,18 @@ public class WeatherZoneHandler {
 	}
 
 
-	
-	public List<WeatherZone> getSampleData(String station, String zones, String keywords,   HashMap <String, String>additionalZones) {
+	public void clearDatabase() {
 		WeatherZoneDao weatherZoneDao = new WeatherZoneDao(); 
  
-		List<WeatherZone> weatherZones = weatherZoneDao.getFilteredData(station, zones, keywords, additionalZones);
+		weatherZoneDao.deleteTable(); 
+	}
+	
+	
+	
+	public List<WeatherZone> getSampleData(String station, String zones, String keywords,   HashMap <String, String>additionalZones, String fileName) {
+		WeatherZoneDao weatherZoneDao = new WeatherZoneDao(); 
+ 
+		List<WeatherZone> weatherZones = weatherZoneDao.getFilteredData(station, zones, keywords, additionalZones, fileName);
 		return weatherZones;
 	}
 	

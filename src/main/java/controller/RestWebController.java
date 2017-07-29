@@ -30,7 +30,7 @@ public class RestWebController {
     	    	
     	WeatherZone weatherZone = gson.fromJson(param, WeatherZone.class);
     
-		weatherZoneList = handler.getSampleData(weatherZone.getStation(), weatherZone.getZones(), weatherZone.getKeyword(),  weatherZone.getadditionalzones() );
+		weatherZoneList = handler.getSampleData(weatherZone.getStation(), weatherZone.getZones(), weatherZone.getKeyword(),  weatherZone.getadditionalzones(), weatherZone.getFilename());
 		
 		String result = buildSampleWeatherJSON(weatherZoneList);
     	return result;
@@ -56,8 +56,19 @@ public class RestWebController {
     	Gson gson = new Gson();
     	    	
     	WeatherZone weatherZone = gson.fromJson(param, WeatherZone.class);
-    	builder.buildOutputFile(weatherZone.getStation(), weatherZone.getZones(), weatherZone.getKeyword(), weatherZone.getFileNameOut(), weatherZone.getadditionalzones() );
+    	builder.buildOutputFile(weatherZone.getStation(), weatherZone.getZones(), weatherZone.getKeyword(), weatherZone.getFileNameOut(), weatherZone.getadditionalzones(), weatherZone.getFilename() );
     }
+
+    @RequestMapping(value="/clearDatabase", method=RequestMethod.POST)	
+    public void clearDatabase(){
+    	WeatherZoneHandler handler = new WeatherZoneHandler();
+    	
+    	System.out.println("clear database request: " );
+    	    	
+    	handler.clearDatabase();
+
+    }
+
     
     private String buildSampleWeatherJSON(List<WeatherZone> weatherZoneList){
 

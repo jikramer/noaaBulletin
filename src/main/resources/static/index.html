@@ -26,9 +26,10 @@
 				<form name="parseForm">
 					<div class="row">
 						<div class="col-sm-4">
-							<label>File Name</label> <input type="text" name="fileName"
-								class="form-control" ng-model="post.filename" />
+							<label>File Name</label> <input type="file" name="fileName"
+								 ng-model="post.filename" />
 						</div>
+			  
 						<div class="col-sm-4">
 							<label>Station</label> <input type="text" name="station"
 								class="form-control" ng-model="post.station" />
@@ -100,6 +101,13 @@
 					<br>
 					
 					<div class="row">
+				
+							<div class="col-sm-3">
+								<label>File Name of Record</label> <input type="text"
+									name="filename" class="form-control"
+									ng-model="post.filename" />
+							</div>
+				
 							<div class="col-sm-3">
 								<label>File Name Out</label> <input type="text"
 									name="filenameout" class="form-control"
@@ -111,12 +119,12 @@
 					
 					<div class="row">
 
-							<div class="col-sm-3">
+							<div class="col-sm-2">
 								<button id="btn-outputfile" ng-click="buildoutputfile(post)"
 									class="btn btn-primary">Build Output File</button>
 							</div>
 
-							<div class="col-sm-3">
+							<div class="col-sm-2">
 								<button id="btn-sample" ng-click="getsampledata(post)"
 									class="btn btn-default">View Sample</button>
 							</div>
@@ -125,6 +133,12 @@
 								<button id="btn-clear" ng-click="clearall(post)"
 									class="btn btn-default">Clear All</button>
 							</div>
+
+							<div class="col-sm-2">
+								<button id="btn-cleardb" ng-click="cleardb()"
+									class="btn btn-danger">Clear Database</button>
+							</div>
+
 
 							<div class="col-sm-2">
 								<button id="btn-addzone" ng-click="zoneadd()"

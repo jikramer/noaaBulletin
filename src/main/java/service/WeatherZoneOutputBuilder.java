@@ -40,7 +40,7 @@ public class WeatherZoneOutputBuilder {
 		magentaList.add("black ice");
 	}
 	
-	public void buildOutputFile(String station, String zones, String keywords, String fileNameOut, HashMap additionalZones) {
+	public void buildOutputFile(String station, String zones, String keywords, String fileNameOut, HashMap additionalZones, String fileName) {
 		if (keywords == null) 
 			keywords = "";
 		//if ( additionalZones == null )
@@ -48,15 +48,15 @@ public class WeatherZoneOutputBuilder {
 		if(fileNameOut == null || fileNameOut == "")
 			fileNameOut = "testOut";
 		//writeTxtFile(station, zones, keywords, fileNameOut,  additionalZones);
-		writeWordFile(station, zones, keywords, fileNameOut,  additionalZones );
+		writeWordFile(station, zones, keywords, fileNameOut,  additionalZones, fileName );
 	}
 
 
-	private void writeWordFile(String station, String zones, String keywords, String fileNameOut,  HashMap additionalZones) {
+	private void writeWordFile(String station, String zones, String keywords, String fileNameOut,  HashMap additionalZones, String fileName) {
 
 		int count = 0;
 		WeatherZoneDao dao = new WeatherZoneDao();
-		List<WeatherZone> weatherZones = dao.getFilteredData(station, zones, keywords, additionalZones);
+		List<WeatherZone> weatherZones = dao.getFilteredData(station, zones, keywords, additionalZones, fileName);
 
 		additionalZones = new HashMap();
 		try {
@@ -106,7 +106,7 @@ public class WeatherZoneOutputBuilder {
 				    run.setFontFamily("Courier New");
 					run.getCTR().addNewRPr().addNewHighlight().setVal(STHighlightColor.YELLOW); 				  
 
-					run.setText(weatherZoneText.replace("|",  "").replace("-", "").trim());
+					run.setText(weatherZoneText.replace("|",  "").trim());
 					run.addBreak();
 				}else if (weatherZoneText.indexOf(zones.toUpperCase() + "-") > -1){
  					int startIndex = weatherZoneText.indexOf(zones.toUpperCase() + "-");
@@ -120,12 +120,12 @@ public class WeatherZoneOutputBuilder {
 					if(preKey.indexOf("|") > -1){
 						String[] aPreKey = preKey.split("\\|");
 						for ( int i = 0; i < aPreKey.length; i++){
-							run.setText(aPreKey[i].replace("-", "").trim());
+							run.setText(aPreKey[i].trim());
 							if (i < aPreKey.length-1 )
 								run.addBreak();
 						}
 					}else
-						run.setText(preKey.replace("-", "").trim());
+						run.setText(preKey.trim());
 					
 					//colorize
 					run = paragraph.createRun();	
@@ -136,11 +136,11 @@ public class WeatherZoneOutputBuilder {
 					if(keyword.indexOf("|") > -1){
 						String[] aKeyword = keyword.split("\\|");
 						for ( int i = 0; i< aKeyword.length; i++){
-							run.setText(aKeyword[i].replace("-", "").trim());
+							run.setText( aKeyword[i].trim());
 							run.addBreak();
 						}
 					}else
-						run.setText(keyword.replace("-", "").trim());
+						run.setText(  keyword.trim());
 					
 					//set back to default 
 					run = paragraph.createRun();	
@@ -151,12 +151,12 @@ public class WeatherZoneOutputBuilder {
 					if(postKey.indexOf("|") > -1){
 						String[] aPostKey = postKey.split("\\|");
 						for ( int i = 0; i< aPostKey.length; i++){
-							run.setText(aPostKey[i].replace("-", "").trim());
+							run.setText(aPostKey[i].trim());
 							if (i < aPostKey.length-1 )
 								run.addBreak();
 						}
 					}else
-						run.setText(postKey.replace("-", "").trim());
+						run.setText(postKey.trim());
 				
 				}
 	 			
@@ -167,7 +167,7 @@ public class WeatherZoneOutputBuilder {
 			 	run.setFontSize(10);
 			    run.setFontFamily("Courier New");
 				run.getCTR().addNewRPr().addNewHighlight().setVal(STHighlightColor.YELLOW); 				  
- 				run.setText(weatherZone.getStationTimestamp().replace("-", "").trim());
+ 				run.setText(weatherZone.getStationTimestamp().trim());
 				run.addBreak();
 
 				//set back to default 
@@ -320,7 +320,7 @@ public class WeatherZoneOutputBuilder {
 		testMap.put("1",  "BRONX");
 		
 		
-		builder.writeWordFile("KOKX", "EASTERN UNION", "HIGHS IN THE MID 30S", "testOut", testMap);
+		builder.writeWordFile("KOKX", "EASTERN UNION", "HIGHS IN THE MID 30S", "testOut", testMap, "Baxter-Hutzel-srrs-op.txt");
 		
 	}
 }

@@ -49,6 +49,9 @@ app.controller('parsecontroller', function($scope, $http, $location) {
 	    $scope.parseForm.$setUntouched();   
 	}
 	
+	
+	
+	
 });
 
 /***********************************************************************
@@ -104,6 +107,25 @@ app.controller('buildcontroller', function($scope, $http, $location) {
 		return value;
 	};
 
+	$scope.cleardb = function(post) {
+ 			var url = $location.absUrl() + "clearDatabase";
+
+ 			alert("clearing db.." + url);
+			
+ 			var config = {
+				headers : {
+					'Content-Type' : 'application/json;charset=utf-8;'
+				}
+			}
+ 
+			$http.post(url, post, config).then(function(response) {
+				$scope.getResultMessage = "Success!";
+
+			}, function(response) {
+				$scope.getResultMessage = "Fail!";
+			});
+		}
+	
 	$scope.getsampledata = function(post) {
 		var url = $location.absUrl() + "getsampleweather";
 
@@ -126,6 +148,7 @@ app.controller('buildcontroller', function($scope, $http, $location) {
 		});
 	}
 
+	
 	$scope.buildoutputfile = function(post) {
 		var url = $location.absUrl() + "buildoutputfile";
 
@@ -164,7 +187,9 @@ app.controller('buildcontroller', function($scope, $http, $location) {
 	    
 	    post.keyword = '';
 	    post.fileNameOut = '';
-	  
+
+	    post.filename = '';
+
 		$scope.response = '';
 		doSample = false;
  		$scope.value = 'hide';
