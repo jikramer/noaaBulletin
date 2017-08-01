@@ -205,7 +205,7 @@ public class WeatherZoneHandler {
 				
 				if (line.contains("PUBLIC INFORMATION") || line.contains("SPOTTER")
 						|| weatherZone.getHeader().contains("PUBLIC INFORMATION")
-						|| weatherZone.getHeader().contains("SPOTTER")) {
+						|| weatherZone.getHeader().contains("SPOTTER") ) {
 					return weatherZone;
 				}			
 				
@@ -269,6 +269,8 @@ public class WeatherZoneHandler {
 	}
 
 	private boolean isZoneCode(String s) {
+		if (s.contains(SPACE))
+			return false;
 		String n = ".*[0-9].*";
 		String a = ".*[A-Z].*";
 		return s.matches(n) && s.matches(a);

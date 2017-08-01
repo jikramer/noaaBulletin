@@ -3,23 +3,28 @@ package service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STHighlightColor;
 
 import dbo.WeatherZoneDao;
 import model.WeatherZone;
 
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun; 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.STHighlightColor;
+
 
 public class WeatherZoneOutputBuilder {
 
+	Logger slf4jLogger = LoggerFactory.getLogger("WeatherZoneOutputBuilder");
+			
+	
 	public static final List<String> blueList = new ArrayList<String>();
 	public static final List<String> greenList = new ArrayList<String>();
 	public static final List<String> magentaList = new ArrayList<String>();
@@ -41,6 +46,9 @@ public class WeatherZoneOutputBuilder {
 	}
 	
 	public void buildOutputFile(String station, String zones, String keywords, String fileNameOut, HashMap additionalZones, String fileName) {
+		
+		slf4jLogger.info("in buildOutputFile");
+		
 		if (keywords == null) 
 			keywords = "";
 		//if ( additionalZones == null )
@@ -56,11 +64,19 @@ public class WeatherZoneOutputBuilder {
 
 		int count = 0;
 		WeatherZoneDao dao = new WeatherZoneDao();
+		
+		slf4jLogger.info("calling the dbo: "  );
+		
 		List<WeatherZone> weatherZones = dao.getFilteredData(station, zones, keywords, additionalZones, fileName);
 
+		slf4jLogger.info("back from dbo");
+		
 		additionalZones = new HashMap();
 		try {
-			FileOutputStream out = new FileOutputStream(new File("./output/" + fileNameOut + ".docx"));
+			
+			slf4jLogger.info("back from dbo");
+			
+			FileOutputStream out = new FileOutputStream(new File("../../output/" + fileNameOut + ".docx"));
 			XWPFDocument doc = new XWPFDocument(); 
 			XWPFParagraph paragraph = doc.createParagraph();
 		 	XWPFRun run=paragraph.createRun();
@@ -70,8 +86,12 @@ public class WeatherZoneOutputBuilder {
  			run.addBreak();
  		    run.addBreak();
 			  
- 			for (WeatherZone weatherZone : weatherZones) {
+ 		   slf4jLogger.info("writing word file: " + fileNameOut);
+
+ 		   for (WeatherZone weatherZone : weatherZones) {
 				count++;
+				
+				slf4jLogger.info("count: " + count);
 				
 				//station
  			    run.setText(weatherZone.getStation().replace("-", ""));
@@ -79,6 +99,8 @@ public class WeatherZoneOutputBuilder {
  	 			
  			    //header
  			    String header = weatherZone.getHeader();
+ 			    
+ 			    
 				String[] aHeader = header.split("\\|");
 				for(int i = 0; i < aHeader.length; i++){
 					run.setText(aHeader[i].replace("-", "").trim());
@@ -96,7 +118,7 @@ public class WeatherZoneOutputBuilder {
 	 			
 	 			//zones
 	 			String weatherZoneText = weatherZone.getZones();
-	 			System.out.println("weatherZoneText: " + weatherZoneText );
+	 			slf4jLogger.info("weatherZoneText: " + weatherZoneText);
 	 			
 	 			////////////
 				if(weatherZoneText.equals(zones.toUpperCase()+ "- | ")){		
@@ -198,7 +220,12 @@ public class WeatherZoneOutputBuilder {
 			doc.write(out);
 		    out.close();
 		} catch (IOException e) {
+			slf4jLogger.info("IOException : " + e.getMessage());
+		} catch (Exception e) {
+			slf4jLogger.info("Exception : " + e.getMessage());
 		}
+		
+		
 	}
 	
 	

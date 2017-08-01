@@ -7,13 +7,19 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import model.WeatherZone;
 import utils.DBUtils;
 
+
+
 public class WeatherZoneDao {
 
+	Logger slf4jLogger = LoggerFactory.getLogger("WeatherZoneDao");
+	
 	public void writeWeatherZoneData(HashMap<String, ArrayList<WeatherZone>> weatherZoneData) {
 
 		Connection conn = DBUtils.getConnection();
@@ -39,6 +45,7 @@ public class WeatherZoneDao {
 				} catch (Exception e) {
 					System.err.println(" Exception writing weather data! ");
 					System.err.println(e.getMessage());
+					slf4jLogger.info("Exception : " + e.getMessage());
 				}
 			}
 		}
@@ -72,6 +79,7 @@ public class WeatherZoneDao {
 		} catch (Exception e) {
 			System.err.println("exception retreiving sample data... ");
 			System.err.println(e.getMessage());
+			slf4jLogger.info("Exception : " + e.getMessage());
 		}
 		return weatherZoneList;
 	}
@@ -121,6 +129,7 @@ public class WeatherZoneDao {
 		} catch (Exception e) {
 			System.err.println("exception retreiving sample data... ");
 			System.err.println(e.getMessage());
+			slf4jLogger.info("Exception : " + e.getMessage());
 		}
 		return weatherZoneList;
 	}
@@ -139,6 +148,7 @@ public class WeatherZoneDao {
 		} catch (Exception e) {
 			System.err.println("Got an exception! ");
 			System.err.println(e.getMessage());
+			slf4jLogger.info("Exception : " + e.getMessage());
 		}
 	}
 
