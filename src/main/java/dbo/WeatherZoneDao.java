@@ -46,6 +46,7 @@ public class WeatherZoneDao {
 					System.err.println(" Exception writing weather data! ");
 					System.err.println(e.getMessage());
 					slf4jLogger.info("Exception : " + e.getMessage());
+					slf4jLogger.info("chokey weatherZone : " + weatherZone.toString());
 				}
 			}
 		}
