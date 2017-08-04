@@ -11,6 +11,10 @@ import java.util.List;
 import dbo.WeatherZoneDao;
 import model.WeatherZone;
 import utils.FileUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 
 public class WeatherZoneHandler {
 
@@ -29,8 +33,12 @@ public class WeatherZoneHandler {
 	String currentStation = EMPTY_STRING;
 	String currentHeader = EMPTY_STRING;
 	String station = EMPTY_STRING;
- 	
+	Logger slf4jLogger = LoggerFactory.getLogger("WeatherZoneHandler");
+	
 	public void doWeatherZoneDataLoad(String station) {
+
+		
+		
 		this.station = station.toUpperCase();
 		HashMap<String, ArrayList<WeatherZone>> weatherZoneData = doDataRead();
 		WeatherZoneDao weatherZoneDao = new WeatherZoneDao();
@@ -89,7 +97,7 @@ public class WeatherZoneHandler {
 				WeatherZone weatherZone = processHeader();
 				line = br.readLine();
 				while (!line.contains(END_OF_SECTION_DELIMITER)) {
-					System.out.println("forecast line: " + line);
+					//System.out.println("forecast line: " + line);
 					rawDataBuffer.append(line);
 					rawDataBuffer.append(NEW_LINE_CHAR);
 					line = br.readLine();
@@ -102,6 +110,7 @@ public class WeatherZoneHandler {
 
 		} catch (Exception e) {
 			System.out.println("Exception reading.. " + e.getMessage());
+			slf4jLogger.info("Exception reading.. " + e.getMessage()  );
 		}
 		return weatherZoneList;
 	}
@@ -188,12 +197,15 @@ public class WeatherZoneHandler {
 			if (hasStation){
 				line = br.readLine();
 			}
- 
-			String zoneCodes = loadZoneCodes();
-			if(zoneCodes.length() > 0){
-				//note - setZoneCodes advances the br
-				weatherZone.setZoneCodes(zoneCodes);
- 			}
+			
+			//jk 8.1.2017 - SHORT TERM FORECAST KPHI
+			if(weatherZone.getZoneCodes() == null){	
+				String zoneCodes = loadZoneCodes();
+				if(zoneCodes.length() > 0){
+					//note - setZoneCodes advances the br
+					weatherZone.setZoneCodes(zoneCodes);
+	 			}
+			}
 			
 			// get the text zones
 			StringBuilder zoneBuff = new StringBuilder();
@@ -205,7 +217,7 @@ public class WeatherZoneHandler {
 				
 				if (line.contains("PUBLIC INFORMATION") || line.contains("SPOTTER")
 						|| weatherZone.getHeader().contains("PUBLIC INFORMATION")
-						|| weatherZone.getHeader().contains("SPOTTER")) {
+						|| weatherZone.getHeader().contains("SPOTTER") ) {
 					return weatherZone;
 				}			
 				
@@ -225,6 +237,8 @@ public class WeatherZoneHandler {
  
 		} catch (IOException e) {
 			e.printStackTrace();
+			slf4jLogger.info("exception: " + e.getMessage());
+			
 		}
 		System.out.println(weatherZone.toString());	
 		return weatherZone;
@@ -239,6 +253,7 @@ public class WeatherZoneHandler {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+			slf4jLogger.info("exception: " + e.getMessage());
 		}
 	}
 	
@@ -257,6 +272,7 @@ public class WeatherZoneHandler {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+			slf4jLogger.info("exception: " + e.getMessage());
 		}
 		return buff.toString();
 	}
@@ -269,6 +285,8 @@ public class WeatherZoneHandler {
 	}
 
 	private boolean isZoneCode(String s) {
+		if (s.contains(SPACE))
+			return false;
 		String n = ".*[0-9].*";
 		String a = ".*[A-Z].*";
 		return s.matches(n) && s.matches(a);
@@ -285,6 +303,7 @@ public class WeatherZoneHandler {
 
 			} catch (IOException e) {
 				e.printStackTrace();
+				slf4jLogger.info("exception: " + e.getMessage());
 			}
 		}
 		System.out.println("not 2 empty lines in a row");

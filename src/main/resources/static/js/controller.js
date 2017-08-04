@@ -189,7 +189,8 @@ app.controller('buildcontroller', function($scope, $http, $location) {
 	    post.fileNameOut = '';
 
 	    post.filename = '';
-
+	    post.truncateDay = '';
+	    
 		$scope.response = '';
 		doSample = false;
  		$scope.value = 'hide';

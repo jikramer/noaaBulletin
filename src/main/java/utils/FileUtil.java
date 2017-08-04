@@ -7,7 +7,7 @@ public class FileUtil {
 	
 	public static File[] getInputFiles(){
 		
-		File folder = new File("c:/dev/weatherMark/inputFiles/");
+		File folder = new File("c:/dev/weatherMark/input/");
 		File[] listOfFiles = folder.listFiles();
 
 		//debug

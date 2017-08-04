@@ -23,7 +23,7 @@ public class WeatherZone {
 	private HashMap<String, String> files;
 	private HashMap<String, String> stations;
 	private String fileNameOut;
-
+	private String truncateDay;
 	
 	
 	public String getStation() {
@@ -204,6 +204,18 @@ public class WeatherZone {
 	 */
 	public void setAdditionalZones(HashMap<String, String> additionalzones) {
 		this.additionalzones = additionalzones;
+	}
+	/**
+	 * @return the truncateDay
+	 */
+	public String getTruncateDay() {
+		return truncateDay;
+	}
+	/**
+	 * @param truncateDay the truncateDay to set
+	 */
+	public void setTruncateDay(String truncateDay) {
+		this.truncateDay = truncateDay;
 	}
 
 }

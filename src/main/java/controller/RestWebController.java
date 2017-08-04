@@ -56,7 +56,7 @@ public class RestWebController {
     	Gson gson = new Gson();
     	    	
     	WeatherZone weatherZone = gson.fromJson(param, WeatherZone.class);
-    	builder.buildOutputFile(weatherZone.getStation(), weatherZone.getZones(), weatherZone.getKeyword(), weatherZone.getFileNameOut(), weatherZone.getadditionalzones(), weatherZone.getFilename() );
+    	builder.buildOutputFile(weatherZone.getStation().toUpperCase(), weatherZone.getZones().toUpperCase(), weatherZone.getKeyword().toUpperCase(), weatherZone.getFileNameOut(), weatherZone.getadditionalzones(), weatherZone.getFilename(), weatherZone.getTruncateDay().toUpperCase() );
     }
 
     @RequestMapping(value="/clearDatabase", method=RequestMethod.POST)	
