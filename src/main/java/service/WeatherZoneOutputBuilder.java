@@ -60,15 +60,15 @@ public class WeatherZoneOutputBuilder {
 
 		additionalZones = new HashMap();
 		try {
-			FileOutputStream out = new FileOutputStream(new File("./output/" + fileNameOut + ".docx"));
+			FileOutputStream out = new FileOutputStream(new File("c:/dev/weatherMark/outputFiles/" + fileNameOut + ".docx"));
 			XWPFDocument doc = new XWPFDocument(); 
 			XWPFParagraph paragraph = doc.createParagraph();
 		 	XWPFRun run=paragraph.createRun();
 		 	run.setFontSize(10);
 		    run.setFontFamily("Courier New");
-		 	run.setText("Test " + station + " Forecasts");
- 			run.addBreak();
- 		    run.addBreak();
+		// 	run.setText("Test " + station + " Forecasts");
+ 		//	run.addBreak();
+ 		 //   run.addBreak();
 			  
  			for (WeatherZone weatherZone : weatherZones) {
 				count++;
@@ -98,7 +98,7 @@ public class WeatherZoneOutputBuilder {
 	 			String weatherZoneText = weatherZone.getZones();
 	 			System.out.println("weatherZoneText: " + weatherZoneText );
 	 			
-	 			////////////
+	 			//////////// 
 				if(weatherZoneText.equals(zones.toUpperCase()+ "- | ")){		
  		 			//colorize
 					run = paragraph.createRun();	
@@ -106,7 +106,7 @@ public class WeatherZoneOutputBuilder {
 				    run.setFontFamily("Courier New");
 					run.getCTR().addNewRPr().addNewHighlight().setVal(STHighlightColor.YELLOW); 				  
 
-					run.setText(weatherZoneText.replace("|",  "").trim());
+					run.setText(weatherZoneText.replace("|",  ""));
 					run.addBreak();
 				}else if (weatherZoneText.indexOf(zones.toUpperCase() + "-") > -1){
  					int startIndex = weatherZoneText.indexOf(zones.toUpperCase() + "-");
@@ -120,12 +120,12 @@ public class WeatherZoneOutputBuilder {
 					if(preKey.indexOf("|") > -1){
 						String[] aPreKey = preKey.split("\\|");
 						for ( int i = 0; i < aPreKey.length; i++){
-							run.setText(aPreKey[i].trim());
+							run.setText(aPreKey[i]);
 							if (i < aPreKey.length-1 )
 								run.addBreak();
 						}
 					}else
-						run.setText(preKey.trim());
+						run.setText(preKey);
 					
 					//colorize
 					run = paragraph.createRun();	
@@ -136,11 +136,11 @@ public class WeatherZoneOutputBuilder {
 					if(keyword.indexOf("|") > -1){
 						String[] aKeyword = keyword.split("\\|");
 						for ( int i = 0; i< aKeyword.length; i++){
-							run.setText( aKeyword[i].trim());
+							run.setText( aKeyword[i]);
 							run.addBreak();
 						}
 					}else
-						run.setText(  keyword.trim());
+						run.setText(  keyword);
 					
 					//set back to default 
 					run = paragraph.createRun();	
@@ -176,6 +176,16 @@ public class WeatherZoneOutputBuilder {
 			    run.setFontFamily("Courier New");
 
 				String forecast = weatherZone.getForecast();
+				
+	 		 	//try to truncate weatherZoneText as of specified day
+			 			
+			 	String truncateByDay = "TUESDAY";
+			 			
+			 	if(truncateByDay != "")
+			 		forecast = truncateByDay(forecast, truncateByDay); 
+			 	//
+			 			
+				
 				
 				run = processForecast(run, paragraph, forecast, keywords);
 				
@@ -240,30 +250,75 @@ public class WeatherZoneOutputBuilder {
 			String keyword = forecastRow.substring(startIndex, endIndex);
 //	
 			//do pre
-			run.setText(preKey.trim());
+			run.setText(preKey);
 			
 			//colorize
 			run = paragraph.createRun();	
 		 	run.setFontSize(10);
 		    run.setFontFamily("Courier New");
 			run.getCTR().addNewRPr().addNewHighlight().setVal(color); 				  
-			run.setText(keyword.trim());
+			run.setText(keyword);
 			
 			//set back to default 
 			run = paragraph.createRun();	
 		 	run.setFontSize(10);
 		    run.setFontFamily("Courier New");
 				
-			run.setText(postKey.trim());
+			run.setText(postKey);
 			
 		}else{
-			run.setText(forecastRow.trim());
+			run.setText(forecastRow);
 		}
 		run.addBreak();
 	
 		return run;
 	}
-	 	
+
+	
+	private String truncateByDay(String text, String dayToEnd){
+		String result = "";
+		
+		try{
+				switch (dayToEnd){
+			
+				case "FRIDAY":
+					result = text.substring(0,text.indexOf(".SATURDAY"));
+					break;
+				
+				case "SATURDAY":
+					result = text.substring(0,text.indexOf(".SUNDAY"));
+					break;
+				
+				case "SUNDAY":
+					result = text.substring(0,text.indexOf(".MONDAY"));
+					break;
+				
+				case "MONDAY":
+					result = text.substring(0,text.indexOf(".TUESDAY"));
+					break;
+				
+				case "TUESDAY":
+					result = text.substring(0,text.indexOf(".WEDNESDAY"));
+					break;
+				
+				case "WEDNESDAY":
+					result = text.substring(0,text.indexOf(".THURSDAY"));
+					break;
+				
+				default:
+					result = text;
+					break;
+				
+				}
+			}catch(Exception e){
+				System.out.println("Exception truncating by day, returning entire string..." + e.getMessage());
+				result = text;
+			}	
+		
+ 		
+		return result;
+		
+	}
 
 	
 	private XWPFRun colorizeExisting(XWPFRun run, XWPFParagraph paragraph, String forecastRow, String keywords,  STHighlightColor.Enum color){
@@ -287,20 +342,20 @@ public class WeatherZoneOutputBuilder {
 
 			run.setFontSize(10);
 		    run.setFontFamily("Courier New");
-			run.setText(preKey.trim());
+			run.setText(preKey);
 			
 			//colorize
 			run = paragraph.createRun();	
 		 	run.setFontSize(10);
 		    run.setFontFamily("Courier New");
 			run.getCTR().addNewRPr().addNewHighlight().setVal(color); 				  
-			run.setText(keyword.trim());
+			run.setText(keyword);
 
 			//set back to default 
 			run = paragraph.createRun();	
 		 	run.setFontSize(10);
 		    run.setFontFamily("Courier New");
-			run.setText(postKey.trim());
+			run.setText(postKey);
 			
 	//	}else{
 	//		run.setText(forecastRow);
