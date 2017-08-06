@@ -36,9 +36,6 @@ public class WeatherZoneHandler {
 	Logger slf4jLogger = LoggerFactory.getLogger("WeatherZoneHandler");
 	
 	public void doWeatherZoneDataLoad(String station) {
-
-		
-		
 		this.station = station.toUpperCase();
 		HashMap<String, ArrayList<WeatherZone>> weatherZoneData = doDataRead();
 		WeatherZoneDao weatherZoneDao = new WeatherZoneDao();
@@ -47,12 +44,15 @@ public class WeatherZoneHandler {
 
 	private HashMap<String, ArrayList<WeatherZone>> doDataRead() {
 		HashMap<String, ArrayList<WeatherZone>> weatherZoneDataMap = new HashMap<String, ArrayList<WeatherZone>>();
-
-		File[] inputFiles = FileUtil.getInputFiles();
-		for (File file : inputFiles) {
-
-			ArrayList<WeatherZone> weatherZoneDataList = parseFile(file);
-			weatherZoneDataMap.put(file.getName(), weatherZoneDataList);
+		try{
+			File[] inputFiles = FileUtil.getInputFiles();
+			for (File file : inputFiles) {
+				ArrayList<WeatherZone> weatherZoneDataList = parseFile(file);
+				slf4jLogger.info("WeatherZoneHandler.doDataRead():  " + file.getName());
+				weatherZoneDataMap.put(file.getName(), weatherZoneDataList);
+			}
+		} catch (Exception e) {
+			slf4jLogger.info("Exception reading.. " + e.getMessage()  );
 		}
 		return weatherZoneDataMap;
 	}
@@ -60,7 +60,6 @@ public class WeatherZoneHandler {
 
 	public void clearDatabase() {
 		WeatherZoneDao weatherZoneDao = new WeatherZoneDao(); 
- 
 		weatherZoneDao.deleteTable(); 
 	}
 	
@@ -68,8 +67,7 @@ public class WeatherZoneHandler {
 	
 	public List<WeatherZone> getSampleData(String station, String zones, String keywords,   HashMap <String, String>additionalZones, String fileName) {
 		WeatherZoneDao weatherZoneDao = new WeatherZoneDao(); 
- 
-		List<WeatherZone> weatherZones = weatherZoneDao.getFilteredData(station, zones, keywords, additionalZones, fileName);
+ 		List<WeatherZone> weatherZones = weatherZoneDao.getFilteredData(station, zones, keywords, additionalZones, fileName);
 		return weatherZones;
 	}
 	
@@ -96,8 +94,8 @@ public class WeatherZoneHandler {
 
 				WeatherZone weatherZone = processHeader();
 				line = br.readLine();
+				
 				while (!line.contains(END_OF_SECTION_DELIMITER)) {
-					//System.out.println("forecast line: " + line);
 					rawDataBuffer.append(line);
 					rawDataBuffer.append(NEW_LINE_CHAR);
 					line = br.readLine();
@@ -109,14 +107,12 @@ public class WeatherZoneHandler {
 			}
 
 		} catch (Exception e) {
-			System.out.println("Exception reading.. " + e.getMessage());
 			slf4jLogger.info("Exception reading.. " + e.getMessage()  );
 		}
 		return weatherZoneList;
 	}
-
+	//iterate thru lines until we get first line with a station
 	private void initializeBufferedReader() {
-
 		try {
 			line = br.readLine();
 
@@ -124,7 +120,7 @@ public class WeatherZoneHandler {
 				line = br.readLine();
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			slf4jLogger.info("IOException: " + e.getMessage()  );
 		}
 	}
 
@@ -134,57 +130,18 @@ public class WeatherZoneHandler {
 
 		try {
 			
-			if(isZoneCode(line))
-				weatherZone.setZoneCodes(line);
+//			if(isZoneCode(line))
+//				weatherZone.setZoneCodes(line);
 			
 			while (( !isZoneCode(line) &&  !line.contains(station)) || line.equals(EMPTY_STRING) )
 				line = br.readLine();
- 
+		
 			if (line.contains(station)) {
 				hasStation = true;
-				System.out.println("station updated to... : " + line);
+				slf4jLogger.info("station updated to... : " + line);
 				currentStation = line;
 				weatherZone.setStation(currentStation);
- 
-				// since we have a station get the header
-				StringBuilder headerBuff = new StringBuilder();
-				line = br.readLine();
-				
- 				headerBuff.append(line);
-				headerBuff.append(SPACE_PIPE_SPACE);
- 
-				while (true) {
-					line = br.readLine();
-
-					if (isZoneCode(line) || isZoneCodeContinuation(line)) {
-						System.out.println("zone code: " + line);
-						weatherZone.setZoneCodes(line);
-						break;
-					}
-					
-					if (line.startsWith(TRIPLE_DOT)){
-						System.out.println("we got at TRIPLE_DOT: " + line);
-						break;
-					}
-			 
-					if (line.length() >= 3 && line.substring(0, 3).matches("[0-9]{3}")) {
-						weatherZone.setStationTimestamp(line);
-						System.out.println("station timestamp: " + line);
-			
-						//'usually' the line after the 1st date for a batch with a new station is the zone code
-						line = br.readLine();
-						if (isZoneCode(line) || isZoneCodeContinuation(line)) {
-							System.out.println("zone code: " + line);
-							weatherZone.setZoneCodes(line);
-						}	
-						break;
-					}
-					headerBuff.append(line);
-					headerBuff.append(SPACE_PIPE_SPACE);
-				}
-				currentHeader = headerBuff.toString();
-				System.out.println("Header updated to...: " + currentHeader);
-				weatherZone.setHeader(currentHeader);
+				weatherZone = processHeaderWithStation(weatherZone);
 			}
 
 			if (weatherZone.getStation()  == null)
@@ -221,11 +178,10 @@ public class WeatherZoneHandler {
 					return weatherZone;
 				}			
 				
-				System.out.println("line: " + line);
-
+ 
 				if (line.length() >= 3 && line.substring(0, 3).matches("[0-9]{3}")) {
 					weatherZone.setStationTimestamp(line);
-					System.out.println("station timestamp: " + line);
+ 					slf4jLogger.info("station timestamp: " + line);
 					break;
 				}
  				zoneBuff.append(line);
@@ -233,30 +189,67 @@ public class WeatherZoneHandler {
 			}
 
 			weatherZone.setZones(zoneBuff.toString());
-			System.out.println("zones: " + zoneBuff.toString());
+ 			slf4jLogger.info("All the Zones: " + zoneBuff.toString());
  
 		} catch (IOException e) {
-			e.printStackTrace();
-			slf4jLogger.info("exception: " + e.getMessage());
+ 			slf4jLogger.info("exception: " + e.getMessage());
 			
 		}
-		System.out.println(weatherZone.toString());	
+		slf4jLogger.info("this weatherZone: " + weatherZone.toString());
 		return weatherZone;
 	}
 
-	public void skipZoneCodes() {
-		try {
+	// When the header has the station it's a new section 
+	private WeatherZone processHeaderWithStation(WeatherZone weatherZone){
+
+		try{
+			// since we have a station get the header
+			StringBuilder headerBuff = new StringBuilder();
 			line = br.readLine();
-			if (isZoneCode(line)) {
-				System.out.println("zone code: " + line);
-				skipZoneCodes();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			slf4jLogger.info("exception: " + e.getMessage());
-		}
-	}
+			
+			headerBuff.append(line);
+			headerBuff.append(SPACE_PIPE_SPACE);
 	
+			while (true) {
+				line = br.readLine();
+	
+				if (isZoneCode(line) || isZoneCodeContinuation(line)) {
+					slf4jLogger.info("calling this a zone code: " + line);
+					weatherZone.setZoneCodes(line);
+					break;
+				}
+				
+				if (line.startsWith(TRIPLE_DOT)){
+					slf4jLogger.info("we got at TRIPLE_DOT: " + line);
+					break;
+				}
+		 
+				if (line.length() >= 3 && line.substring(0, 3).matches("[0-9]{3}")) {
+					weatherZone.setStationTimestamp(line);
+					slf4jLogger.info("station timestamp: " + line);
+			
+					//'usually' the line after the 1st date for a batch with a new station is the zone code
+					line = br.readLine();
+					if (isZoneCode(line) || isZoneCodeContinuation(line)) {
+						slf4jLogger.info("calling this a zone code too: " + line);
+						weatherZone.setZoneCodes(line);
+					}	
+					break;
+				}
+				headerBuff.append(line);
+				headerBuff.append(SPACE_PIPE_SPACE);
+			}
+			currentHeader = headerBuff.toString();
+			slf4jLogger.info("Header updated to...: " + currentHeader);
+			weatherZone.setHeader(currentHeader);
+
+		}catch (Exception e){
+			slf4jLogger.info("Exception processing header with station: " + e.getMessage());
+		}
+		return weatherZone;
+	}
+
+	 
 	public String loadZoneCodes() {
 		StringBuilder buff = new StringBuilder();
 		try {
@@ -266,19 +259,21 @@ public class WeatherZoneHandler {
 				line = br.readLine();
 			
 			if (isZoneCode(line) || isZoneCodeContinuation(line)) {
-				System.out.println("zone code: " + line);
+ 				slf4jLogger.info("current Zone Code: " + line);
 				buff.append(line);
 				loadZoneCodes();
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
-			slf4jLogger.info("exception: " + e.getMessage());
+ 			slf4jLogger.info("exception: " + e.getMessage());
 		}
 		return buff.toString();
 	}
 	
 
 	private boolean isZoneCodeContinuation(String s) {
+		if (s.contains(SPACE))
+			return false;
+ 		
 		String n = ".*[0-9].*";
 		boolean a = s.endsWith("-");
 		return s.matches(n) && a;
@@ -297,22 +292,20 @@ public class WeatherZoneHandler {
 			try {
 				line = br.readLine();
 				if (line == null || line.equals(EMPTY_STRING)) { 
-					System.out.println("2 empty lines in a row...  Done.");
+					slf4jLogger.info("2 empty lines in a row...  Done!!");
 					return true;
 				}
 
 			} catch (IOException e) {
-				e.printStackTrace();
 				slf4jLogger.info("exception: " + e.getMessage());
 			}
 		}
-		System.out.println("not 2 empty lines in a row");
+		slf4jLogger.info("not 2 empty lines in a row...  Continuing!!");
 		return false;
 	}
 
 	public List<WeatherZone> getSampleWeather() {
-
-		WeatherZoneDao weatherZoneDao = new WeatherZoneDao();
+ 		WeatherZoneDao weatherZoneDao = new WeatherZoneDao();
 		List<WeatherZone> weatherZone = weatherZoneDao.getSampleData();
 		return weatherZone;
 	}
@@ -323,7 +316,6 @@ public class WeatherZoneHandler {
 	public static void main(String args[]) {
 		WeatherZoneHandler weatherZoneHandler = new WeatherZoneHandler();
 		weatherZoneHandler.doWeatherZoneDataLoad("KOKX");
-
-	}
+ 	}
 
 }
