@@ -1,3 +1,4 @@
+
 package model;
 
 import java.util.Date;
@@ -9,6 +10,7 @@ public class WeatherZone {
 	private String header;
 	private String zoneCodes;
 	private String zones;
+ 	private HashMap<String, String> additionalzones;
 	private String specialInfo;
 	private String stationTimestamp;
 	private String stationLocation;
@@ -20,7 +22,8 @@ public class WeatherZone {
 	
 	private HashMap<String, String> files;
 	private HashMap<String, String> stations;
-
+	private String fileNameOut;
+	private String truncateDay;
 	
 	
 	public String getStation() {
@@ -80,8 +83,8 @@ public class WeatherZone {
 	/**
 	 * @param fileId the fileId to set
 	 */
-	public void setFilename(String fileId) {
-		this.filename = fileId;
+	public void setFilename(String fileName) {
+		this.filename = fileName;
 	}
 	/**
 	 * @return the zone_codes
@@ -177,6 +180,42 @@ public class WeatherZone {
 	}
 	public void setStations(HashMap<String, String> stations) {
 		this.stations = stations;
+	}
+	/**
+	 * @return the fileNameOut
+	 */
+	public String getFileNameOut() {
+		return fileNameOut;
+	}
+	/**
+	 * @param fileNameOut the fileNameOut to set
+	 */
+	public void setFileNameOut(String fileNameOut) {
+		this.fileNameOut = fileNameOut;
+	}
+	/**
+	 * @return the additionalZones
+	 */
+	public HashMap<String, String> getadditionalzones() {
+		return additionalzones;
+	}
+	/**
+	 * @param additionalZones the additionalZones to set
+	 */
+	public void setAdditionalZones(HashMap<String, String> additionalzones) {
+		this.additionalzones = additionalzones;
+	}
+	/**
+	 * @return the truncateDay
+	 */
+	public String getTruncateDay() {
+		return truncateDay;
+	}
+	/**
+	 * @param truncateDay the truncateDay to set
+	 */
+	public void setTruncateDay(String truncateDay) {
+		this.truncateDay = truncateDay;
 	}
 
 }

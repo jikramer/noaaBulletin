@@ -1,161 +1,224 @@
 <!DOCTYPE HTML>
- 
+
 <html>
-	<head> 
-	      <meta charset="utf-8" />
-	      <meta name="viewport" content="width=device-width, initial-scale=1" />
-	      <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.6.0/angular.min.js"></script>
-	      <script src="/js/controller.js"></script>
-       	  <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" />
-	</head>
-		<body>
-			<div class="container" ng-app="app">
-		 	    <div class="page-header">
-			    	<h1> WeatherMark Bulletin Utility </h1>
-		 			<div id="chooseType" style="display: block;">
-			 			 <input type="checkbox"  name="data" ng-model="parseContent"  id="radioParse"> Parse file
-						&nbsp;	
-						 <input type="checkbox"  name="data" ng-model="buildContent" id="radioBuild"> Build report 
-			 		</div>
-			    </div>
-			    <div id ="parseBlock" ng-show="parseContent">
-				    <div ng-controller="parsecontroller">
-				        <form name="parseForm"  >
-				        	<div class = "row">
-					        	<div class = "col-sm-4">
-					            	<label>File Name</label>
-					            	<input type="text" name="fileName" class="form-control" ng-model="post.filename"  />
-					            </div>
-					             <div class = "col-sm-4">
-					            	<label>Station</label>
-					            	<input type="text" name="station" class="form-control" ng-model="post.station"/>
-					            </div>
-					
-							<div class = "col-sm-4">
-		 				
-									<div class="form-group">
-										<div ng-repeat="(i, name) in items track by $index">	
-			 					  		
-			 					    		<label>Additional File {{i + 1}}</label>
-										    <input type="text" name="files[i]" class="form-control" ng-model="post.files[i]"> 
-										  
-										    <label>Additional Station {{i + 1}}</label>
-										    <input type="text" name="stations[i]" class="form-control" ng-model="post.stations[i]"> 
-										    
-										    <br>
-										    <span class="btn btn-warning" ng-click="del(i)">Delete</span>             
-											<br>
-										</div>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script
+	src="http://ajax.googleapis.com/ajax/libs/angularjs/1.6.0/angular.min.js"></script>
+<script src="/js/controller.js"></script>
+<link rel="stylesheet"
+	href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" />
+</head>
+<body>
+	<div class="container" ng-app="app">
+		
+		
+		<div class="page-header">
+			<h1>WeatherMark Bulletin Utility</h1>
+			<div id="chooseType" style="display: block;">
+				<input type="checkbox" name="data" ng-model="parseContent"
+					id="radioParse"> Parse file &nbsp; <input type="checkbox"
+					name="data" ng-model="buildContent" id="radioBuild"> Build
+				report
+			</div>
+		</div>
+		
+		<div id="parseBlock" ng-show="parseContent">
+			
+			<div class="panel panel-default">
+	  			<div class="panel-heading">File Parser</div>
+	  				<div class="panel-body"> 
+			
+			
+						<div ng-controller="parsecontroller">
+							<form name="parseForm">
+								<div class="row">
+									<div class="col-sm-4">
+										<label>File Name</label> <input type="text" name="fileName"
+											class='form-control' ng-model="post.filename" />
 									</div>
-							</div>
-					
-					        </div>
-							<br>	 
-					 		<div class = "row">
-					 			 <div class = "col-sm-3">	
-					            	<button type="submit" class="btn btn-primary" ng-click="doparse(post)" >Submit</button>
-					        	</div>	
-
-				     			<div class = "col-sm-3">	
-						     		<button id="btn-clear" ng-click="clearall()" class="btn btn-default" >Add </button>
-						         </div>
-				    
-				     			<div class = "col-sm-3">	
-						     		<button id="btn-add" ng-click="add()" class="btn btn-default" >Add </button>
-						         </div>
-					
-				        	</div>
-				        </form>
-				        <p><span ng-class="messageClass()">{{message()}}</span></p>
-				    </div>
-				</div>
-
-			   	<div id = "buildBlock" ng-show="buildContent">
-				    <div ng-controller="buildcontroller">
-				        <form name="buildForm" id="post" >
-					    	<div class = "row">
-								<div class = "col-sm-3">	
-		 					    	<label>Station</label>
-							        <input type="text" name="station" class= "form-control" ng-model="post.station"/>
-		 				  		</div>
-								<div class = "col-sm-3">	
-		 			        		<div class="form-group">
-						  				<label>Zone(s) </label>
-						        		<input type="text" name="zones" class= "form-control" ng-model="post.zones"/>
-						  			</div>	
-						    	</div>
-				 				<div class = "col-sm-3">	
-				 					<div class="form-group">
-					 					<label>Keyword</label>
-									    <input type="text" name="keyword" class="form-control" 	ng-model="post.keyword">   
-				  					</div>
- 				  				</div>
-		 						  <div class = "col-sm-3">
-		 							<div class="form-group">
-										<div ng-repeat="(i, name) in items track by $index">	
-			 					    		<label>Additional Keyword {{i + 1}}</label>
-										    <input type="text" name="keywords[i]" class="form-control" ng-model="post.keywords[i]"> 
-										    <br>
-										    <span class="btn btn-warning" ng-click="del(i)">Delete</span>             
-										</div>
+						  
+									<div class="col-sm-4">
+										<label>Station</label> <input type="text" name="station"
+											class="form-control" ng-model="post.station" />
 									</div>
+			
 								</div>
-		 					</div>
-		 					
-						  	<br>
-							<div class = "row">
-								<div class = "col-sm-3">	
-						     		<button id="btn-outputfile" ng-click="buildoutputfile(post)" class="btn btn-primary" >Build Output File</button>
-						        </div>
-							 
-								<div class = "col-sm-3">	
-						     		<button id="btn-sample" ng-click="getsampledata(post)" class="btn btn-default">View Sample</button>
-						        </div>
-								
-								<div class = "col-sm-3">	
-						     		<button id="btn-clear" ng-click="clearall()" class="btn btn-default" >Clear All	</button>
-						         </div>
-					
-								<div class = "col-sm-3">	
-						     		<button id="btn-addkeyword" ng-click="add()" class="btn btn-default" >Add Keyword</button>
-						         </div>
-								
-								<p><span ng-class="messageClass()">{{message()}}</span></p>
-						    
-						    </div>
-						    
-						</form>	
-						
-						<div id = "doSample" ng-class="showSample();">
-						    <h2> <small> {{label()}} </small></h2>
-							 
-		 					<table class="table table-striped" >
-							    <tr >
-							        <th>Station</th>
-							        <th>Header</th>
-							        <th>Zone Codes</th>
-							        <th>Zones</th>
-							        <th>Station Timestamp</th>
-							        <th>Forecast</th>
-							        <th>Date Created</th>
-							        <th>Filename</th>
-						       </tr>
-			 					
-							    <tr ng-repeat="x in response">
-							        <td>{{x.station}}</td>
-							        <td>{{x.header}}</td>
-							        <td>{{x.zoneCodes}}</td>
-							        <td>{{x.zones}}</td>
-							        <td>{{x.stationTimestamp}}</td>
-							        <td>{{x.forecast}}</td>
-							        <td>{{x.dateCreated}}</td>
-							        <td>{{x.filename}}</td>
-						       </tr>
-			 				    
-							</table>
-		 			    </div>     
+								<br>
+								<div class="row">
+									<div class="col-sm-3">
+										<button type="submit" class="btn btn-primary"
+											ng-click="doparse(post)">Submit</button>
+									</div>
+			
+									<div class="col-sm-3">
+										<button id="btn-clear" ng-click="clearparseform()"
+											class="btn btn-default">Clear</button>
+									</div>
+			
+								</div>
+							</form>
+							<p>
+								<span ng-class="messageClass()">{{message()}}</span>
+							</p>
+						</div>
 					</div>
 				</div>
+		</div>		
+
+
+
+			<div id="buildBlock" ng-show="buildContent">
+
+
+				<div class="panel panel-default">
+					<div class="panel-heading">File Builder</div>
+						<div class="panel-body"> 
+					
+
+						<div ng-controller="buildcontroller">
+							<form name="buildForm" id="buildForm">
+								<div class="row">
+			
+									<div class="col-sm-2">
+										<label>Station</label> <input type="text" name="station"
+											class="form-control" ng-model="post.station" />
+									</div>
+									<div class="col-sm-2">
+										<label>Primary Zone</label> <input type="text" name="zones"
+											class="form-control" ng-model="post.zones" />
+									</div>
+			
+									<div class="col-sm-2">
+										<div class="form-group">
+											<label>Key Phrase</label> <input type="text" name="keyword"
+												class="form-control" ng-model="post.keyword">
+										</div>
+									</div>
+									
+									<div class="col-sm-2">
+										<div class="form-group">
+											<label>Truncate as of day</label> <input type="text" name="keyword"
+												class="form-control" ng-model="post.truncateDay">
+										</div>
+									</div>
+									
+									
+									<div class="col-sm-2">
+										<div class="form-group">
+											<div ng-repeat="(i, name) in zoneitems track by $index">
+												<label>Additional Zone{{i + 1}}</label> <input type="text"
+													name="additionalzones[i]" class="form-control" ng-model="post.additionalzones[i]">
+												<br> <span class="btn btn-warning" ng-click="zonedel(i)">Delete</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-2">
+										<div class="form-group">
+											<div ng-repeat="(i, name) in items track by $index">
+												<label>Additional Key Phrase {{i + 1}}</label> <input type="text"
+													name="keywords[i]" class="form-control" ng-model="post.keywords[i]">
+												<br> <span class="btn btn-warning" ng-click="del(i)">Delete</span>
+											</div>
+										</div>
+									</div>
+			
+								</div>
+							 
+								<br>
+								
+								<div class="row">
+							
+										<div class="col-sm-3">
+											<label>File Name of Record</label> <input type="text"
+												name="filename" class="form-control"
+												ng-model="post.filename" />
+										</div>
+							
+										<div class="col-sm-3">
+											<label>File Name Out</label> <input type="text"
+												name="filenameout" class="form-control"
+												ng-model="post.fileNameOut" />
+										</div>
+								</div>
+								<br>
+								
+								
+								<div class="row">
+			
+										<div class="col-sm-2">
+											<button id="btn-outputfile" ng-click="buildoutputfile(post)"
+												class="btn btn-primary">Build Output File</button>
+										</div>
+			
+										<div class="col-sm-2">
+											<button id="btn-sample" ng-click="getsampledata(post)"
+												class="btn btn-default">View Sample</button>
+										</div>
+			
+										<div class="col-sm-2">
+											<button id="btn-clear" ng-click="clearall(post)"
+												class="btn btn-default">Clear All</button>
+										</div>
+			
+										<div class="col-sm-2">
+											<button id="btn-cleardb" ng-click="cleardb()"
+												class="btn btn-danger">Clear Database</button>
+										</div>
+			
+			
+										<div class="col-sm-2">
+											<button id="btn-addzone" ng-click="zoneadd()"
+												class="btn btn-default">Add Zone</button>
+										</div>
+			
+										<div class="col-sm-2">
+											<button id="btn-addkeyword" ng-click="add()"
+												class="btn btn-default">Add Keyword</button>
+										</div>
+									</div>
+			
+									<p>
+										<span ng-class="messageClass()">{{message()}}</span>
+									</p>
+							</form>
+			
+							<div id="doSample" ng-class="showSample();">
+								<h2>
+									<small> {{label()}} </small>
+								</h2>
+			
+								<table class="table table-striped" id="sampletable">
+									<tr>
+										<th>Station</th>
+										<th>Header</th>
+										<th>Zone Codes</th>
+										<th>Zones</th>
+										<th>Station Timestamp</th>
+										<th>Forecast</th>
+										<th>Date Created</th>
+										<th>Filename</th>
+									</tr>
+			
+									<tr ng-repeat="x in response">
+										<td>{{x.station}}</td>
+										<td>{{x.header}}</td>
+										<td>{{x.zoneCodes}}</td>
+										<td>{{x.zones}}</td>
+										<td>{{x.stationTimestamp}}</td>
+										<td>{{x.forecast}}</td>
+										<td>{{x.dateCreated}}</td>
+										<td>{{x.filename}}</td>
+									</tr>
+			
+								</table>
+							</div>
+						</div>
+					</div>
+					
+				</div>
 			</div>
-		</body>
+	</div>
+</body>
 </html>

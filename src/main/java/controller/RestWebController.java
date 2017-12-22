@@ -23,11 +23,16 @@ public class RestWebController {
     @RequestMapping(value = "/getsampleweather", method = RequestMethod.POST)
     public String getSampleWeather(@RequestBody String param){
     	System.out.println("incoming 1: " );
-    	
     	WeatherZoneHandler handler = new WeatherZoneHandler();
-    	weatherZoneList = handler.getSampleWeather();
-     	    	
-    	String result = buildSampleWeatherJSON(weatherZoneList);
+      
+    	System.out.println("buildOutputFile request: " + param);
+    	Gson gson = new Gson();
+    	    	
+    	WeatherZone weatherZone = gson.fromJson(param, WeatherZone.class);
+    
+		weatherZoneList = handler.getSampleData(weatherZone.getStation(), weatherZone.getZones(), weatherZone.getKeyword(),  weatherZone.getadditionalzones(), weatherZone.getFilename());
+		
+		String result = buildSampleWeatherJSON(weatherZoneList);
     	return result;
     	
      }
@@ -51,8 +56,19 @@ public class RestWebController {
     	Gson gson = new Gson();
     	    	
     	WeatherZone weatherZone = gson.fromJson(param, WeatherZone.class);
-    	builder.buildOutputFile(weatherZone.getStation(), weatherZone.getZones(), weatherZone.getKeyword() );
+    	builder.buildOutputFile(weatherZone.getStation().toUpperCase(), weatherZone.getZones().toUpperCase(), weatherZone.getKeyword().toUpperCase(), weatherZone.getFileNameOut(), weatherZone.getadditionalzones(), weatherZone.getFilename(), weatherZone.getTruncateDay().toUpperCase() );
     }
+
+    @RequestMapping(value="/clearDatabase", method=RequestMethod.POST)	
+    public void clearDatabase(){
+    	WeatherZoneHandler handler = new WeatherZoneHandler();
+    	
+    	System.out.println("clear database request: " );
+    	    	
+    	handler.clearDatabase();
+
+    }
+
     
     private String buildSampleWeatherJSON(List<WeatherZone> weatherZoneList){
 

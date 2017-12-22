@@ -10,19 +10,7 @@ app.controller('parsecontroller', function($scope, $http, $location) {
 	var messageClassName = "hide";
 	var screenMessage = "";
 
-	$scope.items = [];
-	$scope.newitem = '';
-	$scope.add = function() {
-		if ($scope.items.length < 4) {
-			$scope.items.push($scope.newitem);
-		}
-	}
-	$scope.del = function(i) {
-		$scope.items.splice(i, 1);
-	
-	}
-
-	
+ 
 	$scope.messageClass = function() {
 		return messageClassName;
 	}
@@ -50,25 +38,20 @@ app.controller('parsecontroller', function($scope, $http, $location) {
 		});
 	}
 
-	$scope.submitForm = function(post) {
-		var url = $location.absUrl() + "postfilename";
-
-		var config = {
-			headers : {
-				'Content-Type' : 'application/json;charset=utf-8;'
-			}
-		}
-
-		$http.post(url, post, config).then(function(response) {
-			screenMessage = "Sucessful!";
-			messageClassName = "label label-success";
-
-		}, function(response) {
-			screenMessage = "Fail!";
-			messageClassName = "label label-danger";
-		});
-
+	$scope.clearparseform = function() {
+		
+		$scope.form = {};
+		screenMessage = "";	
+	    $scope.post.filename = '';
+	    $scope.post.station = '';
+  	    
+		$scope.parseForm.$setPristine();
+	    $scope.parseForm.$setUntouched();   
 	}
+	
+	
+	
+	
 });
 
 /***********************************************************************
@@ -88,9 +71,23 @@ app.controller('buildcontroller', function($scope, $http, $location) {
 		}
 	}
 	$scope.del = function(i) {
+		$scope.items[i] = '';
 		$scope.items.splice(i, 1);
  	}
 
+	$scope.zoneitems = [];
+	$scope.zonenewitem = '';
+	$scope.zoneadd = function() {
+		if ($scope.zoneitems.length < 4) {
+			$scope.zoneitems.push($scope.zonenewitem);
+		}
+	}
+	$scope.zonedel = function(i) {
+		$scope.zoneitems[i] = '';
+	    $scope.zoneitems.splice(i, 1);
+ 	}
+	
+	
 	$scope.messageClass = function() {
 		return messageClassName;
 	}
@@ -106,11 +103,29 @@ app.controller('buildcontroller', function($scope, $http, $location) {
 			value = "hide";
 		} else
 			value = "show";
-		// alert("showSample val: [" + value +" ]");
-
+ 
 		return value;
 	};
 
+	$scope.cleardb = function(post) {
+ 			var url = $location.absUrl() + "clearDatabase";
+
+ 			alert("clearing db.." + url);
+			
+ 			var config = {
+				headers : {
+					'Content-Type' : 'application/json;charset=utf-8;'
+				}
+			}
+ 
+			$http.post(url, post, config).then(function(response) {
+				$scope.getResultMessage = "Success!";
+
+			}, function(response) {
+				$scope.getResultMessage = "Fail!";
+			});
+		}
+	
 	$scope.getsampledata = function(post) {
 		var url = $location.absUrl() + "getsampleweather";
 
@@ -133,6 +148,7 @@ app.controller('buildcontroller', function($scope, $http, $location) {
 		});
 	}
 
+	
 	$scope.buildoutputfile = function(post) {
 		var url = $location.absUrl() + "buildoutputfile";
 
@@ -141,12 +157,15 @@ app.controller('buildcontroller', function($scope, $http, $location) {
 				'Content-Type' : 'application/json;charset=utf-8;'
 			}
 		}
-
+		
+		
 		$scope.filteredLabel = function() {
 			return "Results:";
 		}
 
 		$http.post(url, post, config).then(function(response) {
+			doSample = false;
+
 			screenMessage = "Sucessful!";
 			messageClassName = "label label-success";
 
@@ -156,20 +175,30 @@ app.controller('buildcontroller', function($scope, $http, $location) {
 		});
 	}
 
-	$scope.clearall = function() {
+	$scope.clearall = function(post) {
 		
-		$scope.form = {};
-		
-	    $scope.post.station = '';
-	    $scope.post.zones = '';
-	    $scope.post.keyword = '';
-	    $scope.post.keywords0 = '';
-	    $scope.post.keywords1 = '';
-	    $scope.post.keywords2 = '';
-	    $scope.post.keywords3 = '';
- 	    
-		$scope.buildForm.$setPristine();
-	    $scope.buildForm.$setUntouched();   
-	}
+		$scope.buildForm = {};
+		screenMessage = "";	
+	
+	    post.station = '';
+	    post.zones = '';
+	    post.additionalzones = [];
+	    post.keywords = [];
+	    
+	    post.keyword = '';
+	    post.fileNameOut = '';
+
+	    post.filename = '';
+	    post.truncateDay = '';
+	    
+		$scope.response = '';
+		doSample = false;
+ 		$scope.value = 'hide';
+	
+ 		$scope.items = [];
+ 		$scope.zoneitems = [];
+ 		
+        $scope.model = '';
+  	}
 
 });

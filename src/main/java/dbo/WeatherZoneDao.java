@@ -8,11 +8,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import model.WeatherZone;
 import utils.DBUtils;
 
+
+
 public class WeatherZoneDao {
 
+	Logger slf4jLogger = LoggerFactory.getLogger("WeatherZoneDao");
+	
 	public void writeWeatherZoneData(HashMap<String, ArrayList<WeatherZone>> weatherZoneData) {
 
 		Connection conn = DBUtils.getConnection();
@@ -38,11 +45,14 @@ public class WeatherZoneDao {
 				} catch (Exception e) {
 					System.err.println(" Exception writing weather data! ");
 					System.err.println(e.getMessage());
+					slf4jLogger.info("Exception : " + e.getMessage());
+					slf4jLogger.info("chokey weatherZone : " + weatherZone.toString());
 				}
 			}
 		}
 	}
 
+	
 	public List<WeatherZone> getSampleData() {
 		Connection conn = DBUtils.getConnection();
 		List<WeatherZone> weatherZoneList = new ArrayList<WeatherZone>();
@@ -70,24 +80,36 @@ public class WeatherZoneDao {
 		} catch (Exception e) {
 			System.err.println("exception retreiving sample data... ");
 			System.err.println(e.getMessage());
+			slf4jLogger.info("Exception : " + e.getMessage());
 		}
 		return weatherZoneList;
 	}
 
-	public List<WeatherZone> getFilteredData(String station, String zones, String keywords) {
+	public List<WeatherZone> getFilteredData(String station, String zones, String keywords, HashMap additionalZones, String fileName) {
 		Connection conn = DBUtils.getConnection();
 		List<WeatherZone> weatherZoneList = new ArrayList<WeatherZone>();
-
+ 		
 		if ( keywords == null)
 			keywords = "";
 		
 		try {
+
+			 
 			String query = "select * from weatherZone " 
 					+ " where station like '%" + station + "%'" 
 					+ " and zones like '%" + zones + "%'"
-					+ " and forecast like '%" + keywords + "%'";
-					
+					+ " and file_id = '" + fileName + "'"
+					;
+					//+ " and forecast like '%" + keywords + "%'";
 
+	/*		if(additionalZones != null){
+				Set<String>keys = (Set)additionalZones.keySet();
+	
+		 		for(String key: keys){
+		 		    query = query +  " or zones like '%" + additionalZones.get(key) + "%'";
+		 		}
+			}
+ */
 			Statement st = conn.createStatement();
 			ResultSet rs = st.executeQuery(query);
 
@@ -108,8 +130,27 @@ public class WeatherZoneDao {
 		} catch (Exception e) {
 			System.err.println("exception retreiving sample data... ");
 			System.err.println(e.getMessage());
+			slf4jLogger.info("Exception : " + e.getMessage());
 		}
 		return weatherZoneList;
+	}
+
+
+	public void deleteTable() {
+		Connection conn = DBUtils.getConnection();
+
+		try {
+			String query = "truncate table weatherZone ";
+
+			Statement st = conn.createStatement();
+			boolean rs = st.execute(query);
+ 			st.close();
+
+		} catch (Exception e) {
+			System.err.println("Got an exception! ");
+			System.err.println(e.getMessage());
+			slf4jLogger.info("Exception : " + e.getMessage());
+		}
 	}
 
 	
